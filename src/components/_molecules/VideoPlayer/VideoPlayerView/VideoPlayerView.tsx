@@ -1,9 +1,15 @@
+import { styled } from "@mui/system";
+
 const VideoPlayerView = () => {
   return (
-    <div>
+    <VideoPlayerWrapper>
       <p>video player</p>
-    </div>
+    </VideoPlayerWrapper>
   );
 };
 
 export default VideoPlayerView;
+
+const VideoPlayerWrapper = styled("div")`
+  border: 1px solid red;
+`;
