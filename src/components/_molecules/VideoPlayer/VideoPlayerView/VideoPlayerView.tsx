@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material";
 
 const VideoPlayerView = () => {
   return (
@@ -12,4 +12,5 @@ export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
   border: 1px solid red;
+  background-color: ${({ theme }) => theme.palette.primary.main};
 `;
