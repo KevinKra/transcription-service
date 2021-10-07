@@ -6,6 +6,14 @@ const detailsSectionTestId = /video-player-details/i;
 const hideDetails = /hide details/i;
 const showDetails = /show details/i;
 
+jest.mock("react-redux", () => {
+  return {
+    ...jest.requireActual("react-redux"),
+    useSelector: jest.fn().mockImplementation(() => ({})),
+    useDispatch: () => jest.fn(),
+  };
+});
+
 describe("VideoPlayerView", () => {
   describe("when the component mounts", () => {
     describe("if no props are provided", () => {

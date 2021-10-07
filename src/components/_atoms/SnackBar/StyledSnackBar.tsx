@@ -6,7 +6,7 @@ import {
   selectAlert,
 } from "../../../redux/slices/alertSlice/alertSlice";
 
-const StyledSnackBar = () => {
+const StyledSnackBar = (): JSX.Element => {
   const [open, setOpen] = useState(true);
   const alertState = useAppSelector(selectAlert);
   const dispatch = useAppDispatch();
@@ -42,19 +42,17 @@ const StyledSnackBar = () => {
     </>
   );
 
-  const showSnackBar =
-    alertState.message && alertState.display !== "internal-only";
+  const showSnackBar: boolean =
+    !!alertState.message && alertState.display !== "internal-only";
 
   return (
-    showSnackBar && (
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        message={alertState.message}
-        onClose={handleClose}
-        action={action}
-      />
-    )
+    <Snackbar
+      open={showSnackBar && open}
+      autoHideDuration={6000}
+      message={alertState.message}
+      onClose={handleClose}
+      action={action}
+    />
   );
 };
 
