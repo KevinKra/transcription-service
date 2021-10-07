@@ -1,4 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import user from "@testing-library/user-event";
 import Hello from "./Hello";
 
@@ -30,13 +35,15 @@ describe("Hello.tsx", () => {
     });
 
     describe("when plus button is clicked", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         fireEvent.click(screen.getByRole("button", { name: "increment" }));
+        await screen.findByText(/count: 1/i);
+        // await waitFor(() => screen.getByText(/count: 1/i));
+        // ? linter prefers 'findByText' syntax over 'waitFor(() => getByText ... )'
       });
 
       test("count increases by 1", () => {
-        const element = screen.getByText(/count: 1/i);
-        expect(element).toBeInTheDocument();
+        expect(screen.getByText(/count: 1/i)).toBeInTheDocument();
       });
     });
 
@@ -56,12 +63,24 @@ describe("Hello.tsx", () => {
       });
 
       describe("when the plus button is clicked", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           user.click(screen.getByRole("button", { name: "increment" }));
+          await screen.findByText(/count: 5/i);
+          // await waitFor(() => screen.getByText(/count: 5/));
+          // ? linter prefers 'findByText' syntax over 'waitFor(() => getByText ... )'
         });
 
         test("count increases by 5", () => {
           expect(screen.getByText(/count: 5/)).toBeInTheDocument();
+        });
+
+        test("removes 'I am too small' after 300ms", async () => {
+          const result = await waitForElementToBeRemoved(() =>
+            // ? waitForElementToBeRemoved is a two for one, it req's element to be there before it's removed.
+            screen.queryByText(/I am too small/)
+          );
+          expect(result).toBeUndefined();
+          // ? writing this assertion since linter was angry not expect was provided
         });
       });
     });
