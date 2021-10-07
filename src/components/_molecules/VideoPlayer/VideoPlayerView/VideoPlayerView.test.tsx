@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import VideoPlayerView from "./VideoPlayerView";
 
-describe("VideoPlayer", () => {
+describe("VideoPlayerView", () => {
   describe("when the component mounts", () => {
     beforeEach(() => {
       render(<VideoPlayerView />);

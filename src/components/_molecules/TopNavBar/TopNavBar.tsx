@@ -7,7 +7,7 @@ import {
 
 type INavBar = IThemeSwitch;
 
-const NavBar = (props: INavBar) => {
+const TopNavBar = (props: INavBar) => {
   return (
     <Wrapper>
       <Link id="link-hero-title" href="/">
@@ -24,7 +24,7 @@ const NavBar = (props: INavBar) => {
   );
 };
 
-export default NavBar;
+export default TopNavBar;
 
 const Wrapper = styled("nav")`
   display: flex;
