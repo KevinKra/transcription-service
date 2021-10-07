@@ -15,14 +15,14 @@ describe("SelectMedia", () => {
   describe("when a user inputs a url for a youtube video", () => {
     describe("if the url is valid", () => {
       test.todo("the VideoPlayer activates with the provided content");
-      test.todo("a success modal appears");
+      test.todo("a success snackbar appears");
       test.todo("the sourceLanguage input is no longer disabled");
       test.todo("the targetLanguage input is no longer disabled");
       test.todo("the submit button is still disabled");
     });
     describe("if the url is invalid", () => {
       test.todo("the VideoPlayer does not activate");
-      test.todo("a failure modal appears");
+      test.todo("a failure snackbar appears");
       test.todo("the sourceLanguage remains disabled");
       test.todo("the targetLanguage remains disabled");
       test.todo("the submit button remains disabled");
@@ -32,7 +32,7 @@ describe("SelectMedia", () => {
     test.todo("the submit button is no longer disabled");
     describe("when the submit button is clicked", () => {
       test.todo("the submit button changes to the loading variant");
-      test.todo("once the job is complete, a success modal appears");
+      test.todo("once the job is complete, a success snackbar appears");
       test.todo("after a delay, the page changes");
     });
   });

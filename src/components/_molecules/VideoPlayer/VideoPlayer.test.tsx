@@ -1,0 +1,41 @@
+import { render } from "@testing-library/react";
+import VideoPlayer from "./VideoPlayer";
+
+describe("VideoPlayer", () => {
+  describe("when the component mounts", () => {
+    beforeEach(() => {
+      render(<VideoPlayer />);
+    });
+    describe("if no props are provided", () => {
+      test.todo(
+        "the player's video section appears in the default no-video format"
+      );
+      test.todo("the player's 'show details' button is disabled");
+      test.todo("the player's details section is not visible");
+
+      describe("if the user clicks the play button", () => {
+        test.todo("a warning snackbar appears");
+        test.todo("the player section remains in the default no-video format");
+      });
+    });
+
+    describe("if valid props are provided", () => {
+      test.todo("the video automatically plays");
+      test.todo("the player's 'show details' button is enabled");
+      test.todo("the player's details section is not visible by default");
+
+      describe("if the user clicks the 'show details' button", () => {
+        test.todo("the player's details section becomes visible");
+        test.todo("all fields have values");
+        test.todo("'show details' button converts to 'hide details'");
+        test.todo("the 'hide details' button is enabled");
+      });
+
+      describe("if the user clicks the 'hide details' button", () => {
+        test.todo("the player's details section is no longer visible");
+        test.todo("'hide details' button converts to 'show details'");
+        test.todo("the 'show details' button is enabled");
+      });
+    });
+  });
+});
