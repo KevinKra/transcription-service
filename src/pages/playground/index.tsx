@@ -4,7 +4,10 @@ const index = () => {
   return (
     <div>
       <p>playground</p>
-      <VideoPlayerController />
+      <VideoPlayerController
+        embedURL="abc"
+        timeStamp={{ startTime: 0, endTime: 10 }}
+      />
     </div>
   );
 };

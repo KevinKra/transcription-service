@@ -4,12 +4,17 @@ import VideoPlayerView from "./VideoPlayerView";
 describe("VideoPlayerView", () => {
   describe("when the component mounts", () => {
     beforeEach(() => {
-      render(<VideoPlayerView />);
+      render(
+        <VideoPlayerView
+          embedURL="abc"
+          timeStamp={{ startTime: 0, endTime: 10 }}
+        />
+      );
     });
     describe("if no props are provided", () => {
-      test.todo(
-        "the player's video section appears in the default no-video format"
-      );
+      test("the player's video section appears in the default no-video format", () => {
+        expect(1).toBe(2);
+      });
       test.todo("the player's 'show details' button is disabled");
       test.todo("the player's details section is not visible");
 
