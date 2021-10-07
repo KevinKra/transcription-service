@@ -12,6 +12,7 @@ import withDarkMode from "next-dark-mode";
 import { useDarkMode } from "next-dark-mode";
 import { useMemo } from "react";
 import TopNavBar from "../components/_molecules/TopNavBar/TopNavBar";
+import SnackBar from "../components/_atoms/SnackBar/SnackBar";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -49,6 +50,7 @@ function MyApp({
             darkModeActive={darkModeActive}
           />
           <Component {...pageProps} />
+          <SnackBar />
         </RootPageStyle>
       </MuiThemeProvider>
     </CacheProvider>
