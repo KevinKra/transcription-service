@@ -25,10 +25,14 @@ export const alertSlice = createSlice({
   initialState,
   reducers: {
     setAlert: (state, action: PayloadAction<IAlertSlice>) => {
-      state = {
+      console.log(action.payload);
+      return (state = {
         ...action.payload,
         key: Date.now(),
-      };
+      });
+    },
+    clearAlert: () => {
+      return initialState;
     },
   },
 });
@@ -38,6 +42,6 @@ export const selectAlert = createSelector(
   (alert) => alert
 );
 
-export const { setAlert } = alertSlice.actions;
+export const { setAlert, clearAlert } = alertSlice.actions;
 
 export default alertSlice.reducer;

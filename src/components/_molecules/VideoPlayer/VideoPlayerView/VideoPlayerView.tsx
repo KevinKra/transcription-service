@@ -1,6 +1,8 @@
 import { IVideoPlayerController } from "../VideoPlayerController/VideoPlayerController";
 import { Button, styled, Typography } from "@mui/material";
 import { useState } from "react";
+import { useAppDispatch } from "../../../../redux/hooks";
+import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 
 type IVideoPlayerView = Partial<IVideoPlayerController>;
 
@@ -10,6 +12,7 @@ const VideoPlayerView = ({
   timeStamp,
 }: IVideoPlayerView) => {
   const [showDetails, setShowDetails] = useState(false);
+  const dispatch = useAppDispatch();
 
   return playable ? (
     <VideoPlayerWrapper>
@@ -30,7 +33,17 @@ const VideoPlayerView = ({
     </VideoPlayerWrapper>
   ) : (
     <VideoPlayerWrapper>
-      <DisabledPlayer>
+      <DisabledPlayer
+        onClick={() =>
+          dispatch(
+            setAlert({
+              type: "warning",
+              message: "No media selected",
+              display: "client-only",
+            })
+          )
+        }
+      >
         <p>Inactive</p>
       </DisabledPlayer>
       <Button disabled>Show Details</Button>
