@@ -6,13 +6,15 @@ import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
 } from "@mui/material/styles";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 import createEmotionCache from "../styles/createEmotionCache";
 import { getDesignTokens } from "../styles/theme";
 import withDarkMode from "next-dark-mode";
 import { useDarkMode } from "next-dark-mode";
 import { useMemo } from "react";
 import TopNavBar from "../components/_molecules/TopNavBar/TopNavBar";
-import SnackBar from "../components/_atoms/SnackBar/SnackBar";
+import StyledSnackBar from "../components/_atoms/SnackBar/StyledSnackBar";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -49,8 +51,10 @@ function MyApp({
             switchToLightMode={switchToLightMode}
             darkModeActive={darkModeActive}
           />
-          <Component {...pageProps} />
-          <SnackBar />
+          <Provider store={store}>
+            <Component {...pageProps} />
+            <StyledSnackBar />
+          </Provider>
         </RootPageStyle>
       </MuiThemeProvider>
     </CacheProvider>
