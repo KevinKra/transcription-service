@@ -25,6 +25,7 @@ export const ThemeSwitch = ({
     <FormControlLabel
       control={
         <MaterialUISwitch
+          data-testid={darkModeActive ? "theme-night-mode" : "theme-day-mode"}
           checked={darkModeActive}
           onClick={toggleMode}
           sx={{ m: 1 }}
