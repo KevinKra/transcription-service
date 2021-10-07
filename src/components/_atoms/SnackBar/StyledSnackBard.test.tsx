@@ -1,6 +1,6 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import StyledSnackBar from "./StyledSnackBar";
-// import StyledSnackBar from "./StyledSnackBar";
+import user from "@testing-library/user-event";
 
 jest.mock("react-redux", () => {
   return {
@@ -14,5 +14,9 @@ describe("StyledSnackBar", () => {
   beforeEach(() => {
     render(<StyledSnackBar />);
   });
-  test.todo("tests are written for this");
+  test.todo("if the redux alertState has a key, setOpen to true");
+
+  test.skip("if close button is clicked, setOpen is set to false", () => {
+    user.click(screen.getByRole("button", { name: /close/i }));
+  });
 });

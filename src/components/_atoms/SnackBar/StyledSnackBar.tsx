@@ -28,8 +28,8 @@ const StyledSnackBar = (): JSX.Element => {
 
   const action = (
     <>
-      <Button color="secondary" size="small" onClick={handleClose}>
-        UNDO
+      <Button color="primary" size="small" onClick={handleClose}>
+        Close
       </Button>
       <IconButton
         size="small"
