@@ -1,22 +1,31 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import VideoPlayerView from "./VideoPlayerView";
+import user from "@testing-library/user-event";
+
+const detailsSectionTestId = /video-player-details/i;
+const hideDetails = /hide details/i;
+const showDetails = /show details/i;
 
 describe("VideoPlayerView", () => {
   describe("when the component mounts", () => {
-    beforeEach(() => {
-      render(
-        <VideoPlayerView
-          embedURL="abc"
-          timeStamp={{ startTime: 0, endTime: 10 }}
-        />
-      );
-    });
     describe("if no props are provided", () => {
-      test("the player's video section appears in the default no-video format", () => {
-        expect(1).toBe(2);
+      beforeEach(() => {
+        render(<VideoPlayerView />);
       });
-      test.todo("the player's 'show details' button is disabled");
-      test.todo("the player's details section is not visible");
+
+      test("the player's video section appears in the default no-video format", () => {
+        expect(screen.getByText(/inactive/i)).toBeInTheDocument();
+      });
+
+      test("the player's 'show details' button is disabled", () => {
+        expect(
+          screen.getByRole("button", { name: showDetails })
+        ).toBeDisabled();
+      });
+
+      test("the player's details section is not visible", () => {
+        expect(screen.queryByText(/title/i)).not.toBeInTheDocument();
+      });
 
       describe("if the user clicks the play button", () => {
         test.todo("a warning snackbar appears");
@@ -25,21 +34,85 @@ describe("VideoPlayerView", () => {
     });
 
     describe("if valid props are provided", () => {
-      test.todo("the video automatically plays");
-      test.todo("the player's 'show details' button is enabled");
-      test.todo("the player's details section is not visible by default");
+      beforeEach(() => {
+        render(
+          <VideoPlayerView
+            playable={true}
+            embedURL="123"
+            timeStamp={{ startTime: 0, endTime: 10 }}
+          />
+        );
+      });
+
+      test("the video automatically plays", () => {
+        expect(screen.getByText(/active/i)).toBeInTheDocument();
+      });
+
+      test("the player's 'show details' button is enabled", () => {
+        expect(screen.getByRole("button", { name: showDetails })).toBeEnabled();
+      });
+
+      test("the player's details section is not visible by default", () => {
+        expect(
+          screen.queryByTestId(detailsSectionTestId)
+        ).not.toBeInTheDocument();
+      });
 
       describe("if the user clicks the 'show details' button", () => {
-        test.todo("the player's details section becomes visible");
+        beforeEach(() => {
+          user.click(screen.getByRole("button", { name: showDetails }));
+        });
+
+        test("the player's details section becomes visible", () => {
+          expect(
+            screen.queryByTestId(detailsSectionTestId)
+          ).toBeInTheDocument();
+        });
+
         test.todo("all fields have values");
-        test.todo("'show details' button converts to 'hide details'");
-        test.todo("the 'hide details' button is enabled");
+
+        test("'show details' button converts to 'hide details'", () => {
+          expect(
+            screen.queryByRole("button", { name: hideDetails })
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByRole("button", { name: showDetails })
+          ).not.toBeInTheDocument();
+        });
+
+        test("the 'hide details' button is enabled", () => {
+          expect(
+            screen.queryByRole("button", { name: hideDetails })
+          ).toBeEnabled();
+        });
       });
 
       describe("if the user clicks the 'hide details' button", () => {
-        test.todo("the player's details section is no longer visible");
-        test.todo("'hide details' button converts to 'show details'");
-        test.todo("the 'show details' button is enabled");
+        beforeEach(() => {
+          user.click(screen.getByRole("button", { name: showDetails }));
+          user.click(screen.getByRole("button", { name: hideDetails }));
+        });
+
+        test("the player's details section is no longer visible", () => {
+          expect(
+            screen.queryByTestId(detailsSectionTestId)
+          ).not.toBeInTheDocument();
+        });
+
+        test("'hide details' button converts to 'show details'", () => {
+          expect(
+            screen.queryByRole("button", { name: showDetails })
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByRole("button", { name: hideDetails })
+          ).not.toBeInTheDocument();
+        });
+
+        test("the 'show details' button is enabled", () => {
+          expect(
+            screen.queryByRole("button", { name: showDetails })
+          ).toBeEnabled();
+        });
       });
     });
   });

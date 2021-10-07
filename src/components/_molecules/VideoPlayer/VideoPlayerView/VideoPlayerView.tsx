@@ -1,22 +1,39 @@
-import { styled } from "@mui/material";
 import { IVideoPlayerController } from "../VideoPlayerController/VideoPlayerController";
+import { Button, styled, Typography } from "@mui/material";
+import { useState } from "react";
 
-type IVideoPlayerView = IVideoPlayerController;
+type IVideoPlayerView = Partial<IVideoPlayerController>;
 
-const VideoPlayerView = ({ embedURL, timeStamp }: IVideoPlayerView) => {
-  return (
+const VideoPlayerView = ({
+  playable = false,
+  embedURL,
+  timeStamp,
+}: IVideoPlayerView) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  return playable ? (
     <VideoPlayerWrapper>
-      <iframe
-        width="100%"
-        height="100%"
-        src={`${embedURL}?autoplay=1&start=${timeStamp?.startTime + 1 || 0}${
-          timeStamp?.endTime && `&end=${timeStamp?.endTime}`
-        }`}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        title="Embedded youtube"
-      />
+      <ActivePlayer>
+        <p>Active</p>
+      </ActivePlayer>
+      <Button onClick={() => setShowDetails((prev) => !prev)}>
+        {showDetails ? "Hide Details" : "Show Details"}
+      </Button>
+      {showDetails && (
+        <DetailsSection
+          data-testid="video-player-details"
+          aria-label="media details"
+        >
+          <Typography>Title</Typography>
+        </DetailsSection>
+      )}
+    </VideoPlayerWrapper>
+  ) : (
+    <VideoPlayerWrapper>
+      <DisabledPlayer>
+        <p>Inactive</p>
+      </DisabledPlayer>
+      <Button disabled>Show Details</Button>
     </VideoPlayerWrapper>
   );
 };
@@ -25,5 +42,9 @@ export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
   border: 1px solid red;
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  /* background-color: ${({ theme }) => theme.palette.primary.main}; */
 `;
+
+const ActivePlayer = styled("div")``;
+const DisabledPlayer = styled("div")``;
+const DetailsSection = styled("section")``;

@@ -1,6 +1,7 @@
 import VideoPlayerView from "../VideoPlayerView/VideoPlayerView";
 
 export interface IVideoPlayerController {
+  playable: boolean;
   embedURL: string;
   timeStamp: {
     startTime: number;

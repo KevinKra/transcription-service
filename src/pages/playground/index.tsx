@@ -5,6 +5,7 @@ const index = () => {
     <div>
       <p>playground</p>
       <VideoPlayerController
+        playable={false}
         embedURL="abc"
         timeStamp={{ startTime: 0, endTime: 10 }}
       />
