@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
-import VideoPlayer from "./VideoPlayer";
+import VideoPlayerView from "./VideoPlayerView";
 
 describe("VideoPlayer", () => {
   describe("when the component mounts", () => {
     beforeEach(() => {
-      render(<VideoPlayer />);
+      render(<VideoPlayerView />);
     });
     describe("if no props are provided", () => {
       test.todo(

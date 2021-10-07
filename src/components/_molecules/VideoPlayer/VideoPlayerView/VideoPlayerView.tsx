@@ -1,4 +1,4 @@
-const VideoPlayer = () => {
+const VideoPlayerView = () => {
   return (
     <div>
       <p>video player</p>
@@ -6,4 +6,4 @@ const VideoPlayer = () => {
   );
 };
 
-export default VideoPlayer;
+export default VideoPlayerView;
