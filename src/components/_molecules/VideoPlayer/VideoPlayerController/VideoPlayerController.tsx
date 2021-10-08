@@ -3,6 +3,7 @@ import VideoPlayerView from "../VideoPlayerView/VideoPlayerView";
 
 export interface IVideoPlayerController {
   playable: boolean;
+  withDetails: boolean;
   embedURL: string;
   timeStamp: {
     startTime: number;
@@ -11,11 +12,7 @@ export interface IVideoPlayerController {
 }
 
 const VideoPlayerController = (props: IVideoPlayerController) => {
-  return (
-    <div>
-      <VideoPlayerView {...props} />
-    </div>
-  );
+  return <VideoPlayerView {...props} />;
 };
 
 export default VideoPlayerController;

@@ -46,6 +46,7 @@ describe("VideoPlayerView", () => {
         render(
           <VideoPlayerView
             playable={true}
+            withDetails={true}
             embedURL="123"
             timeStamp={{ startTime: 0, endTime: 10 }}
           />
@@ -94,33 +95,66 @@ describe("VideoPlayerView", () => {
           ).toBeEnabled();
         });
       });
+    });
 
-      describe("if the user clicks the 'hide details' button", () => {
-        beforeEach(() => {
-          user.click(screen.getByRole("button", { name: showDetails }));
-          user.click(screen.getByRole("button", { name: hideDetails }));
-        });
+    describe("if the user clicks the 'hide details' button", () => {
+      beforeEach(() => {
+        render(
+          <VideoPlayerView
+            playable={true}
+            withDetails={true}
+            embedURL="123"
+            timeStamp={{ startTime: 0, endTime: 10 }}
+          />
+        );
+        user.click(screen.getByRole("button", { name: showDetails }));
+        user.click(screen.getByRole("button", { name: hideDetails }));
+      });
 
-        test("the player's details section is no longer visible", () => {
-          expect(
-            screen.queryByTestId(detailsSectionTestId)
-          ).not.toBeInTheDocument();
-        });
+      test("the player's details section is no longer visible", () => {
+        expect(
+          screen.queryByTestId(detailsSectionTestId)
+        ).not.toBeInTheDocument();
+      });
 
-        test("'hide details' button converts to 'show details'", () => {
-          expect(
-            screen.queryByRole("button", { name: showDetails })
-          ).toBeInTheDocument();
-          expect(
-            screen.queryByRole("button", { name: hideDetails })
-          ).not.toBeInTheDocument();
-        });
+      test("'hide details' button converts to 'show details'", () => {
+        expect(
+          screen.queryByRole("button", { name: showDetails })
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByRole("button", { name: hideDetails })
+        ).not.toBeInTheDocument();
+      });
 
-        test("the 'show details' button is enabled", () => {
-          expect(
-            screen.queryByRole("button", { name: showDetails })
-          ).toBeEnabled();
-        });
+      test("the 'show details' button is enabled", () => {
+        expect(
+          screen.queryByRole("button", { name: showDetails })
+        ).toBeEnabled();
+      });
+    });
+
+    describe("if the expanding feature is turned off", () => {
+      beforeEach(() => {
+        render(
+          <VideoPlayerView
+            playable={true}
+            withDetails={false}
+            embedURL="123"
+            timeStamp={{ startTime: 0, endTime: 10 }}
+          />
+        );
+      });
+
+      test("there is no show details or hide details button", () => {
+        expect(
+          screen.queryByRole("button", { name: /show details/i })
+        ).not.toBeInTheDocument();
+      });
+
+      test("there is no details section", () => {
+        expect(
+          screen.queryByTestId(/video-player-details/i)
+        ).not.toBeInTheDocument();
       });
     });
   });

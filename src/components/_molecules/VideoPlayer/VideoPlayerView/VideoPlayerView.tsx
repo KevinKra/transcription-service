@@ -8,6 +8,7 @@ type IVideoPlayerView = Partial<IVideoPlayerController>;
 
 const VideoPlayerView = ({
   playable = false,
+  withDetails,
   embedURL,
   timeStamp,
 }: IVideoPlayerView) => {
@@ -19,15 +20,19 @@ const VideoPlayerView = ({
       <ActivePlayer>
         <p>Active</p>
       </ActivePlayer>
-      <Button onClick={() => setShowDetails((prev) => !prev)}>
-        {showDetails ? "Hide Details" : "Show Details"}
-      </Button>
-      {showDetails && (
-        <DetailsSection
-          data-testid="video-player-details"
-          aria-label="media details"
-        >
-          <Typography>Title</Typography>
+      {withDetails && (
+        <DetailsSection>
+          <Button onClick={() => setShowDetails((prev) => !prev)}>
+            {showDetails ? "Hide Details" : "Show Details"}
+          </Button>
+          {showDetails && (
+            <DetailsExpand
+              data-testid="video-player-details"
+              aria-label="media details"
+            >
+              <Typography>Title</Typography>
+            </DetailsExpand>
+          )}
         </DetailsSection>
       )}
     </VideoPlayerWrapper>
@@ -55,8 +60,24 @@ export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
   border: 1px solid red;
+  height: 300px;
+  width: 450px;
 `;
 
-const ActivePlayer = styled("div")``;
-const DisabledPlayer = styled("div")``;
-const DetailsSection = styled("section")``;
+const Player = styled("div")`
+  display: grid;
+  place-items: center;
+  border: 1px solid blue;
+  height: 300px;
+  width: 450px;
+`;
+const ActivePlayer = styled(Player)``;
+const DisabledPlayer = styled(Player)``;
+
+const DetailsSection = styled("section")`
+  border: 1px solid red;
+`;
+
+const DetailsExpand = styled("div")`
+  border: 1px solid blue;
+`;
