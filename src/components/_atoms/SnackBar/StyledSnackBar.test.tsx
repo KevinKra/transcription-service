@@ -14,9 +14,7 @@ describe("StyledSnackBar", () => {
   beforeEach(() => {
     render(<StyledSnackBar />);
   });
-  test.todo("if the redux alertState has a key, setOpen to true");
+  test.todo("if the redux alertState object has a key, setOpen to true");
 
-  test.skip("if close button is clicked, setOpen is set to false", () => {
-    user.click(screen.getByRole("button", { name: /close/i }));
-  });
+  test.todo("if close button is clicked, setOpen is set to false");
 });

@@ -31,7 +31,7 @@ export const ThemeSwitch = ({
           sx={{ m: 1 }}
         />
       }
-      label=""
+      label="Switch"
     />
   );
 };
