@@ -1,4 +1,3 @@
-import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 import VideoPlayerView from "../VideoPlayerView/VideoPlayerView";
 
 export interface IVideoPlayerController {

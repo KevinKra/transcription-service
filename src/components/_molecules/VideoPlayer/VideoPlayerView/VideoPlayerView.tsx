@@ -17,7 +17,7 @@ const VideoPlayerView = ({
 
   return playable ? (
     <VideoPlayerWrapper>
-      <ActivePlayer>
+      <ActivePlayer data-testid="video-player-enabled">
         <p>Active</p>
       </ActivePlayer>
       {withDetails && (
@@ -39,6 +39,7 @@ const VideoPlayerView = ({
   ) : (
     <VideoPlayerWrapper>
       <DisabledPlayer
+        data-testid="video-player-disabled"
         onClick={() =>
           dispatch(
             setAlert({
@@ -60,7 +61,6 @@ export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
   border: 1px solid red;
-  height: 300px;
   width: 450px;
 `;
 

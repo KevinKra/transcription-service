@@ -1,21 +1,49 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import SelectMedia from "./SelectMedia";
+
+jest.mock("react-redux", () => {
+  return {
+    ...jest.requireActual("react-redux"),
+    useSelector: jest.fn().mockImplementation(() => ({})),
+    useDispatch: () => jest.fn(),
+  };
+});
 
 describe("SelectMedia", () => {
   describe("when the component mounts", () => {
     beforeEach(() => {
       render(<SelectMedia />);
     });
-    test.todo("no video is selected");
-    test.todo("the source url input is enabled");
-    test.todo("no sourceLanguage input is disabled");
-    test.todo("no targetLanguage input is disabled");
-    test.todo("the submit button is disabled");
+
+    test("no video is selected", () => {
+      expect(screen.getByTestId(/video-player-disabled/i)).toBeInTheDocument();
+    });
+
+    test("the source url input is enabled", () => {
+      expect(screen.getByTestId(/input-source-url/i)).toBeEnabled();
+    });
+
+    test("sourceLanguage selection input is disabled", () => {
+      expect(
+        screen.getByTestId(/input-select-source-language/i)
+      ).toBeDisabled();
+    });
+
+    test("targetLanguage selection input is disabled", () => {
+      expect(
+        screen.getByTestId(/input-select-target-language/i)
+      ).toBeDisabled();
+    });
+
+    test("the submit button is disabled", () => {
+      expect(
+        screen.getByRole("button", { name: /build lesson/i })
+      ).toBeDisabled();
+    });
   });
   describe("when a user inputs a url for a youtube video", () => {
     describe("if the url is valid", () => {
       test.todo("the VideoPlayer activates with the provided content");
-      test.todo("a success snackbar appears");
       test.todo("the sourceLanguage input is no longer disabled");
       test.todo("the targetLanguage input is no longer disabled");
       test.todo("the submit button is still disabled");
