@@ -56,7 +56,7 @@ interface IYoutubeResponse {
   };
 }
 
-interface YTQueryResponse extends IQueryResponse {
+export interface YTQueryResponse extends IQueryResponse {
   data?: IYoutubeResponse;
 }
 

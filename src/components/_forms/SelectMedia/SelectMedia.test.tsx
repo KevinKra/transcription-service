@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "../../../testing-utils/test-utils";
-import { rest } from "msw";
+import { rest, DefaultRequestBody } from "msw";
 import { setupServer } from "msw/node";
 import SelectMedia from "./SelectMedia";
 import user from "@testing-library/user-event";
@@ -7,20 +7,26 @@ import {
   getApiAddress,
   ApiEndpointsEnum,
 } from "../../../utils/helpers/apiRouteHandler/apiRouteHandler";
+import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
 
 const server = setupServer(
-  rest.get(youtubeGetEndpoint, (req, res, ctx) => {
-    return res(ctx.json({ greeting: "hello there" }));
-  })
+  // todo -- refine typing
+  rest.get<DefaultRequestBody, YTQueryResponse>(
+    youtubeGetEndpoint,
+    (req, res, ctx) => {
+      ctx.delay(100);
+      return res(ctx.json({ type: "found" }));
+    }
+  )
 );
 
 beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+afterEach(() => server.resetHandlers());
 
 describe("SelectMedia", () => {
   describe("when the component mounts", () => {
@@ -73,16 +79,17 @@ describe("SelectMedia", () => {
       });
 
       test.skip("the sourceLanguage input is no longer disabled", async () => {
+        // todo - test sometimes fail, resolve (possible) async race condition.
         expect(
           await screen.findByTestId(/input-select-source-language/i)
         ).toBeEnabled();
       });
 
       test.skip("the targetLanguage input is no longer disabled", async () => {
+        // todo - test sometimes fail, resolve (possible) async race condition.
         expect(
           await screen.findByTestId(/input-select-target-language/i)
         ).toBeEnabled();
-        // screen.debug();
       });
 
       test("the submit button is still disabled", () => {
