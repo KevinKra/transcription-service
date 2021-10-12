@@ -36,17 +36,14 @@ describe("SelectMedia", () => {
   });
 
   describe("when a user inputs a url for a youtube video", () => {
-    // todo figure out how to trigger an update to redux:
-    // todo video found -> update author and media
-
     describe("if the url is valid", () => {
       beforeEach(() => {
         render(<SelectMedia />);
+        user.click(screen.getByRole("button", { name: /search/i }));
       });
 
       test("when the user clicks the 'click me' button, a snackbar appears", async () => {
         expect(screen.queryByText(/header/i)).toBeInTheDocument();
-
         const clickMeButton = screen.getByRole("button", { name: /click me/i });
         user.click(clickMeButton);
         expect(
@@ -54,39 +51,46 @@ describe("SelectMedia", () => {
         ).toBeInTheDocument();
       });
 
-      // test.skip("the VideoPlayer activates with the provided content", () => {
-      //   expect(
-      //     screen.queryByTestId(/video-player-enabled/i)
-      //   ).toBeInTheDocument();
-      // });
+      test("the VideoPlayer activates with the provided content", async () => {
+        expect(
+          await screen.findByTestId(/video-player-enabled/i)
+        ).toBeInTheDocument();
+      });
 
-      // test.skip("the sourceLanguage input is no longer disabled", () => {
-      //   expect(
-      //     screen.getByTestId(/input-select-source-language/i)
-      //   ).toBeEnabled();
-      // });
+      test("the sourceLanguage input is no longer disabled", () => {
+        expect(
+          screen.getByTestId(/input-select-source-language/i)
+        ).toBeEnabled();
+      });
 
-      // test.skip("the targetLanguage input is no longer disabled", () => {
-      //   expect(
-      //     screen.getByTestId(/input-select-target-language/i)
-      //   ).toBeEnabled();
-      // });
+      test("the targetLanguage input is no longer disabled", () => {
+        expect(
+          screen.getByTestId(/input-select-target-language/i)
+        ).toBeEnabled();
+      });
 
-      // test.skip("the submit button is still disabled", () => {
-      //   expect(
-      //     screen.getByRole("button", { name: /build lesson/i })
-      //   ).toBeDisabled();
-      // });
+      test("the submit button is still disabled", () => {
+        expect(
+          screen.getByRole("button", { name: /build lesson/i })
+        ).toBeDisabled();
+      });
     });
 
     describe("if the url is invalid", () => {
+      beforeEach(() => {
+        render(<SelectMedia />);
+        // todo write functionality to handle invalid inputs
+        // todo then write these accompanying tests
+        user.click(screen.getByRole("button", { name: /search/i }));
+      });
+
       test.todo("the VideoPlayer does not activate");
-      // test.todo("a failure snackbar appears");
       test.todo("the sourceLanguage remains disabled");
       test.todo("the targetLanguage remains disabled");
       test.todo("the submit button remains disabled");
     });
   });
+
   describe("when all inputs have values", () => {
     test.todo("the submit button is no longer disabled");
     describe("when the submit button is clicked", () => {

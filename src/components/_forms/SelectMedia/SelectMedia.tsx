@@ -1,5 +1,5 @@
 import { TextField, styled, MenuItem, Typography, Button } from "@mui/material";
-import React from "react";
+import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -15,6 +15,7 @@ type IFormInputs = {
 };
 
 const SelectMedia = () => {
+  const [showVideo, setShowVideo] = useState(false);
   const {
     control,
     handleSubmit,
@@ -36,6 +37,10 @@ const SelectMedia = () => {
     console.log("video selected");
   };
 
+  const onSearch = () => {
+    setShowVideo(true);
+  };
+
   const onSubmit: SubmitHandler<IFormInputs> = () => {
     console.log("submit clicked");
   };
@@ -45,12 +50,13 @@ const SelectMedia = () => {
       {alertState && alertState.message + " header"}
       <div>
         <VideoPlayerController
-          playable={false}
+          playable={showVideo}
           withDetails={false}
           embedURL=""
           timeStamp={{ startTime: 0, endTime: 10 }}
         />
       </div>
+      <button onClick={onSearch}>Search</button>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControlInputs>
           <Controller
@@ -93,7 +99,7 @@ const SelectMedia = () => {
                     label="Source Language"
                     variant="filled"
                     value={value}
-                    disabled={true}
+                    disabled={showVideo ? false : true}
                     error={!!errors.sourceLanguage}
                     inputProps={{
                       "data-testid": "input-select-source-language",
@@ -129,7 +135,7 @@ const SelectMedia = () => {
                     label="Target Language"
                     variant="filled"
                     value={value}
-                    disabled={true}
+                    disabled={showVideo ? false : true}
                     error={!!errors.targetLanguage}
                     onChange={onChange}
                     inputProps={{
