@@ -1,5 +1,5 @@
 import { TextField, styled, MenuItem, Typography, Button } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -16,8 +16,11 @@ type IFormInputs = {
 
 const SelectMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+
   const {
     control,
+    watch,
     handleSubmit,
     getValues,
     formState: { errors },
@@ -25,6 +28,16 @@ const SelectMedia = () => {
 
   const alertState = useAppSelector(selectAlert);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const subscription = watch((allFields) => {
+      const fieldValues = Object.values(allFields);
+      const allFieldsHaveInputs = fieldValues.every((field) => !!field);
+      allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const createSnackBar = () => {
     dispatch(
@@ -34,7 +47,6 @@ const SelectMedia = () => {
         display: "support-both",
       })
     );
-    console.log("video selected");
   };
 
   const onSearch = () => {
@@ -68,7 +80,10 @@ const SelectMedia = () => {
               <TextField
                 fullWidth
                 label="Youtube Address"
-                data-testid="input-source-url"
+                // data-testid="input-source-url"
+                inputProps={{
+                  "data-testid": "input-source-url",
+                }}
                 variant="filled"
                 disabled={false}
                 placeholder="https://www.youtube.com/watch?v=0La3aBSjvGY"
@@ -101,6 +116,7 @@ const SelectMedia = () => {
                     value={value}
                     disabled={showVideo ? false : true}
                     error={!!errors.sourceLanguage}
+                    onChange={onChange}
                     inputProps={{
                       "data-testid": "input-select-source-language",
                     }}
@@ -157,7 +173,7 @@ const SelectMedia = () => {
               />
             </SelectWrapper>
           </SelectInputWrapper>
-          <Button disabled={true} variant="contained">
+          <Button disabled={submitDisabled} variant="contained">
             Build Lesson
           </Button>
         </FormControlInputs>

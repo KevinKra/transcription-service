@@ -1,4 +1,9 @@
-import { render, screen } from "../../../testing-utils/test-utils";
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+} from "../../../testing-utils/test-utils";
 import SelectMedia from "./SelectMedia";
 import user from "@testing-library/user-event";
 
@@ -92,7 +97,29 @@ describe("SelectMedia", () => {
   });
 
   describe("when all inputs have values", () => {
-    test.todo("the submit button is no longer disabled");
+    beforeEach(() => {
+      render(<SelectMedia />);
+      user.type(
+        screen.getByTestId(/input-source-url/i),
+        "www.some-address.com"
+      );
+      // user.click(screen.getByRole("button", { name: /search/i }));
+      // ! the above click event produces a nasty console error in the tests
+      // ! that I can't nail down on how to resolve. The tests still passes,
+      // ! but the "error" creates a massive block of text. Removing this click
+      // ! still works, but it starts to deviate from the exact user flow.
+      user.type(screen.getByTestId(/input-select-source-language/i), "en-US");
+      const sourceInput = screen.getByTestId("input-select-source-language");
+      fireEvent.change(sourceInput, { target: { value: "en-US" } });
+      const targetInput = screen.getByTestId("input-select-target-language");
+      fireEvent.change(targetInput, { target: { value: "fr" } });
+    });
+
+    test("the submit button is no longer disabled", () => {
+      expect(
+        screen.getByRole("button", { name: /build lesson/i })
+      ).toBeEnabled();
+    });
     describe("when the submit button is clicked", () => {
       test.todo("the submit button changes to the loading variant");
       test.todo("once the job is complete, a success snackbar appears");
