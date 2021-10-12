@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitForElementToBeRemoved,
-} from "../../../testing-utils/test-utils";
+import { render, screen, fireEvent } from "../../../testing-utils/test-utils";
 import SelectMedia from "./SelectMedia";
 import user from "@testing-library/user-event";
 
@@ -47,15 +42,9 @@ describe("SelectMedia", () => {
         user.click(screen.getByRole("button", { name: /search/i }));
       });
 
-      test.skip("when the user clicks the 'click me' button, a snackbar appears", async () => {
-        // todo -- this test isn't really passing. I am successfully capturing redux updates
-        // todo -- but im adding something to the component, NOT detecting the snackbar
-        expect(screen.queryByText(/header/i)).toBeInTheDocument();
-        const clickMeButton = screen.getByRole("button", { name: /click me/i });
-        user.click(clickMeButton);
-        expect(
-          await screen.findByText(/great job header/i)
-        ).toBeInTheDocument();
+      test.skip("a success toast message appears", async () => {
+        // todo - toast does not exist within component (pages/_app)
+        expect(await screen.findByText(/video found/i)).toBeInTheDocument();
       });
 
       test("the VideoPlayer activates with the provided content", async () => {

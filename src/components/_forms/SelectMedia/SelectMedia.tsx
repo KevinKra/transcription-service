@@ -42,28 +42,23 @@ const SelectMedia = () => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const createSnackBar = () => {
+  const onSearch = () => {
+    setShowVideo(true);
     dispatch(
       setAlert({
         type: "success",
-        message: "great job",
+        message: "Video found",
         display: "support-both",
       })
     );
   };
 
-  const onSearch = () => {
-    setShowVideo(true);
-  };
-
   const onSubmit: SubmitHandler<IFormInputs> = () => {
     setContentSubmitted(true);
-    console.log("submitted");
   };
 
   return (
     <SelectMediaWrapper>
-      {alertState && alertState.message + " header"}
       <div>
         <VideoPlayerController
           playable={showVideo}
@@ -100,7 +95,6 @@ const SelectMedia = () => {
               />
             )}
           />
-          <button onClick={createSnackBar}>click me</button>
 
           <SelectInputWrapper>
             <Typography variant="overline">Language Mapping</Typography>

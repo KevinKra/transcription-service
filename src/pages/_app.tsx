@@ -52,8 +52,8 @@ function MyApp({
             darkModeActive={darkModeActive}
           />
           <Provider store={store}>
-            <Component {...pageProps} />
             <StyledSnackBar />
+            <Component {...pageProps} />
           </Provider>
         </RootPageStyle>
       </MuiThemeProvider>
