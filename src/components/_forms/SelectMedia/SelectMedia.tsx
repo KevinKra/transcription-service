@@ -7,6 +7,8 @@ import {
   setAlert,
 } from "../../../redux/slices/alertSlice/alertSlice";
 import VideoPlayerController from "../../_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
+import LoadingButton from "@mui/lab/LoadingButton";
+import SendIcon from "@mui/icons-material/Send";
 
 type IFormInputs = {
   sourceURL: string;
@@ -17,6 +19,7 @@ type IFormInputs = {
 const SelectMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [contentSubmitted, setContentSubmitted] = useState(false);
 
   const {
     control,
@@ -54,7 +57,8 @@ const SelectMedia = () => {
   };
 
   const onSubmit: SubmitHandler<IFormInputs> = () => {
-    console.log("submit clicked");
+    setContentSubmitted(true);
+    console.log("submitted");
   };
 
   return (
@@ -80,7 +84,6 @@ const SelectMedia = () => {
               <TextField
                 fullWidth
                 label="Youtube Address"
-                // data-testid="input-source-url"
                 inputProps={{
                   "data-testid": "input-source-url",
                 }}
@@ -173,9 +176,16 @@ const SelectMedia = () => {
               />
             </SelectWrapper>
           </SelectInputWrapper>
-          <Button disabled={submitDisabled} variant="contained">
-            Build Lesson
-          </Button>
+          <LoadingButton
+            endIcon={<SendIcon />}
+            loading={contentSubmitted}
+            disabled={submitDisabled}
+            loadingPosition="end"
+            variant="contained"
+            type="submit"
+          >
+            {contentSubmitted ? "building lesson" : "build lesson"}
+          </LoadingButton>
         </FormControlInputs>
       </form>
     </SelectMediaWrapper>
