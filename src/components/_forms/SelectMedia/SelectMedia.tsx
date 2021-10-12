@@ -32,7 +32,7 @@ const SelectMedia = () => {
   } = useForm<IFormInputs>({});
 
   const mountedRef = useRef(false);
-  // effect just for tracking mounted state
+  // effect is just for tracking mounted state for react-testing-library
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -59,8 +59,11 @@ const SelectMedia = () => {
 
     if (youtubeId.length === 11) {
       const response = await searchYoutubeVideo(youtubeId);
-      // todo -- set this video to redux
       console.log("data", response);
+      // todo -- determine if using refs is a good idea
+      // todo -- since it _only_ is being used to resolving a testing
+      // todo -- "memory leak" error in react-testing-library
+      // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
       if (mountedRef.current) {
         setShowVideo(true);
         dispatch(

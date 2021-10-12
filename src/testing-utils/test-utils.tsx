@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 // Import your own reducer
 import alertReducer from "../redux/slices/alertSlice/alertSlice";
 
+// source: https://redux.js.org/usage/writing-tests#connected-components
+
 // function render(
 //   ui: any,
 //   {

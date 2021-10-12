@@ -120,12 +120,11 @@ describe("SelectMedia", () => {
     describe("if the url is invalid", () => {
       beforeEach(() => {
         render(<SelectMedia />);
-        // todo write functionality to handle invalid inputs
-        // todo then write these accompanying tests
         user.click(screen.getByRole("button", { name: /search/i }));
       });
 
       test.todo("the VideoPlayer does not activate");
+      test.todo("a warning toast message appears");
       test.todo("the sourceLanguage remains disabled");
       test.todo("the targetLanguage remains disabled");
       test.todo("the submit button remains disabled");
