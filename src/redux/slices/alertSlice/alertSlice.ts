@@ -25,7 +25,7 @@ export const alertSlice = createSlice({
   initialState: initialAlertState,
   reducers: {
     setAlert: (state, action: PayloadAction<IAlertSlice>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       return (state = {
         ...action.payload,
         key: Date.now(),

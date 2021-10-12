@@ -1,5 +1,5 @@
 import { TextField, styled, MenuItem, Typography, Button } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -9,6 +9,8 @@ import {
 import VideoPlayerController from "../../_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
+import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
+import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 
 type IFormInputs = {
   sourceURL: string;
@@ -29,6 +31,15 @@ const SelectMedia = () => {
     formState: { errors },
   } = useForm<IFormInputs>({});
 
+  const mountedRef = useRef(false);
+  // effect just for tracking mounted state
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   const alertState = useAppSelector(selectAlert);
   const dispatch = useAppDispatch();
 
@@ -42,15 +53,34 @@ const SelectMedia = () => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const onSearch = () => {
-    setShowVideo(true);
-    dispatch(
-      setAlert({
-        type: "success",
-        message: "Video found",
-        display: "support-both",
-      })
-    );
+  const onSearch = async () => {
+    const values = getValues();
+    const youtubeId = youtubeGetId(values.sourceURL);
+
+    if (youtubeId.length === 11) {
+      const response = await searchYoutubeVideo(youtubeId);
+      // todo -- set this video to redux
+      console.log("data", response);
+      if (mountedRef.current) {
+        setShowVideo(true);
+        dispatch(
+          setAlert({
+            type: "success",
+            message: "Video found.",
+            display: "support-both",
+          })
+        );
+      }
+    } else {
+      setShowVideo(false);
+      dispatch(
+        setAlert({
+          type: "warning",
+          message: "Invalid address provided.",
+          display: "support-both",
+        })
+      );
+    }
   };
 
   const onSubmit: SubmitHandler<IFormInputs> = () => {
