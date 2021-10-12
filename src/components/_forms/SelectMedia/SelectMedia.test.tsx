@@ -1,4 +1,9 @@
-import { render, screen, fireEvent } from "../../../testing-utils/test-utils";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "../../../testing-utils/test-utils";
 import { rest, DefaultRequestBody } from "msw";
 import { setupServer } from "msw/node";
 import SelectMedia from "./SelectMedia";
@@ -18,7 +23,6 @@ const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      ctx.delay(100);
       return res(ctx.json({ type: "found" }));
     }
   )
@@ -62,34 +66,43 @@ describe("SelectMedia", () => {
   });
 
   describe("when a user inputs a url for a youtube video", () => {
+    beforeEach(() => {
+      render(<SelectMedia />);
+      user.type(
+        screen.getByTestId(/input-source-url/i),
+        "https://www.youtube.com/watch?v=0La3aBSjvGY"
+      );
+      user.click(screen.getByRole("button", { name: /search/i }));
+    });
     describe("if the url is valid", () => {
-      beforeEach(() => {
-        render(<SelectMedia />);
-        user.type(
-          screen.getByTestId(/input-source-url/i),
-          "https://www.youtube.com/watch?v=0La3aBSjvGY"
-        );
-        user.click(screen.getByRole("button", { name: /search/i }));
-      });
-
       test("the VideoPlayer activates with the provided content", async () => {
         expect(
           await screen.findByTestId(/video-player-enabled/i)
         ).toBeInTheDocument();
       });
 
-      test.skip("the sourceLanguage input is no longer disabled", async () => {
-        // todo - test sometimes fail, resolve (possible) async race condition.
-        expect(
-          await screen.findByTestId(/input-select-source-language/i)
-        ).toBeEnabled();
+      test("the sourceLanguage input is no longer disabled", async () => {
+        // todo - unusual behavior, waitFor succeeds but findBy sometimes fails.
+        await waitFor(() =>
+          expect(
+            screen.getByTestId(/input-select-source-language/i)
+          ).toBeEnabled()
+        );
+        // expect(
+        //   await screen.findByTestId(/input-select-source-language/i)
+        // ).toBeEnabled();
       });
 
-      test.skip("the targetLanguage input is no longer disabled", async () => {
-        // todo - test sometimes fail, resolve (possible) async race condition.
-        expect(
-          await screen.findByTestId(/input-select-target-language/i)
-        ).toBeEnabled();
+      test("the targetLanguage input is no longer disabled", async () => {
+        // todo - unusual behavior, waitFor succeeds but findBy sometimes fails.
+        await waitFor(() =>
+          expect(
+            screen.getByTestId(/input-select-target-language/i)
+          ).toBeEnabled()
+        );
+        // expect(
+        //   await screen.findByTestId(/input-select-target-language/i)
+        // ).toBeEnabled();
       });
 
       test("the submit button is still disabled", () => {
