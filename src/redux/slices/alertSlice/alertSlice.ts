@@ -13,7 +13,7 @@ interface IAlertSlice {
   key?: string | number;
 }
 
-const initialState: IAlertSlice = {
+export const initialAlertState: IAlertSlice = {
   type: "success",
   message: "",
   display: "internal-only",
@@ -22,7 +22,7 @@ const initialState: IAlertSlice = {
 
 export const alertSlice = createSlice({
   name: "alert",
-  initialState,
+  initialState: initialAlertState,
   reducers: {
     setAlert: (state, action: PayloadAction<IAlertSlice>) => {
       console.log(action.payload);
@@ -32,7 +32,7 @@ export const alertSlice = createSlice({
       });
     },
     clearAlert: () => {
-      return initialState;
+      return initialAlertState;
     },
   },
 });

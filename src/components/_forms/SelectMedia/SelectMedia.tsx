@@ -1,6 +1,11 @@
 import { TextField, styled, MenuItem, Typography, Button } from "@mui/material";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import {
+  selectAlert,
+  setAlert,
+} from "../../../redux/slices/alertSlice/alertSlice";
 import VideoPlayerController from "../../_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
 
 type IFormInputs = {
@@ -17,12 +22,27 @@ const SelectMedia = () => {
     formState: { errors },
   } = useForm<IFormInputs>({});
 
+  const alertState = useAppSelector(selectAlert);
+  const dispatch = useAppDispatch();
+
+  const createSnackBar = () => {
+    dispatch(
+      setAlert({
+        type: "success",
+        message: "great job",
+        display: "support-both",
+      })
+    );
+    console.log("video selected");
+  };
+
   const onSubmit: SubmitHandler<IFormInputs> = () => {
     console.log("submit clicked");
   };
 
   return (
     <SelectMediaWrapper>
+      {alertState && alertState.message + " header"}
       <div>
         <VideoPlayerController
           playable={false}
@@ -56,6 +76,7 @@ const SelectMedia = () => {
               />
             )}
           />
+          <button onClick={createSnackBar}>click me</button>
 
           <SelectInputWrapper>
             <Typography variant="overline">Language Mapping</Typography>
