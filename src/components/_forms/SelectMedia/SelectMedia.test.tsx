@@ -212,7 +212,7 @@ describe("SelectMedia", () => {
       ).toBeEnabled();
     });
 
-    describe("when the submit button is clicked", () => {
+    describe("and the submit button is clicked", () => {
       test("the submit button changes to the loading variant", async () => {
         const buildButton = screen.getByRole("button", {
           name: buttonBuildLesson,
@@ -222,6 +222,14 @@ describe("SelectMedia", () => {
       });
 
       test.todo("all inputs become disabled");
+
+      describe("it's able to handle a successful call", () => {
+        test.todo("a success notification appears");
+      });
+      describe("it's able to handle a failing call", () => {
+        test.todo("a failure notification appears");
+        test.todo("all inputs become enabled");
+      });
     });
   });
 });
