@@ -59,7 +59,6 @@ const SelectMedia = () => {
 
     if (youtubeId.length === 11) {
       const response = await searchYoutubeVideo(youtubeId);
-      console.log("data", response);
       // todo -- determine if using refs is a good idea
       // todo -- since it _only_ is being used to resolving a testing
       // todo -- "memory leak" error in react-testing-library
