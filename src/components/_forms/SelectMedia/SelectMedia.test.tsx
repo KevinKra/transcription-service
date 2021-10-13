@@ -104,15 +104,16 @@ describe("SelectMedia", () => {
         ).toBeDisabled();
       });
 
-      test("a success toast message appears", async () => {
-        // todo - toast does not exist within component (pages/_app)
-        expect(await screen.findByText(/video found/i)).toBeInTheDocument();
+      test("a success toast message appears", () => {
+        const successToast = screen.getByText(/video found/i);
+        expect(successToast).toBeInTheDocument();
       });
     });
 
     describe("if the url is invalid", () => {
       beforeEach(() => {
         render(<SelectMedia />);
+        render(<StyledSnackBar />);
         user.click(screen.getByRole("button", { name: /search/i }));
         user.type(
           screen.getByTestId(inputSourceUrl),
@@ -120,7 +121,7 @@ describe("SelectMedia", () => {
         );
       });
 
-      test("all other fields remain disabled", () => {
+      test("all inputs, except the source input, remain disabled", () => {
         expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
         expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
         expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
@@ -129,13 +130,18 @@ describe("SelectMedia", () => {
         ).toBeDisabled();
       });
 
-      test.todo("a warning toast message appears");
+      test("a warning toast message appears", () => {
+        const warningToast = screen.getByText(/invalid address provided/i);
+        expect(warningToast).toBeInTheDocument();
+      });
     });
   });
 
   describe("when all inputs have values", () => {
     beforeEach(() => {
       render(<SelectMedia />);
+      render(<StyledSnackBar />);
+
       user.type(
         screen.getByTestId(/input-source-url/i),
         "http://localhost:5000/services/youtube/FggwAN76lM0"
@@ -157,6 +163,7 @@ describe("SelectMedia", () => {
         screen.getByRole("button", { name: buttonBuildLesson })
       ).toBeEnabled();
     });
+
     describe("when the submit button is clicked", () => {
       test("the submit button changes to the loading variant", async () => {
         const buildButton = screen.getByRole("button", {
@@ -165,7 +172,13 @@ describe("SelectMedia", () => {
         user.click(buildButton);
         expect(await screen.findByText(/building lesson/i)).toBeInTheDocument();
       });
-      test.todo("once the job is complete, a success snackbar appears");
+
+      test("once the job is complete, a success snackbar appears", () => {
+        const successToast = screen.getByText(
+          /Successfully submitted content/i
+        );
+        expect(successToast).toBeInTheDocument();
+      });
       test.todo("after a delay, the page changes");
     });
   });

@@ -87,6 +87,13 @@ const SelectMedia = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = () => {
     setContentSubmitted(true);
+    dispatch(
+      setAlert({
+        type: "success",
+        message: "Successfully submitted content",
+        display: "client-only",
+      })
+    );
   };
 
   return (

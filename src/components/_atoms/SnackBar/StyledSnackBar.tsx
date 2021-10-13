@@ -1,4 +1,4 @@
-import { Button, IconButton, Snackbar } from "@mui/material";
+import { Alert, Button, IconButton, Snackbar } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -26,33 +26,20 @@ const StyledSnackBar = (): JSX.Element => {
     dispatch(clearAlert());
   };
 
-  const action = (
-    <>
-      <Button color="primary" size="small" onClick={handleClose}>
-        Close
-      </Button>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        {/* <CloseIcon fontSize="small" /> */}
-      </IconButton>
-    </>
-  );
-
   const showSnackBar: boolean =
     !!alertState.message && alertState.display !== "internal-only";
 
+  // todo - update severity in redux to match alert handlers
   return (
-    <Snackbar
-      open={showSnackBar && open}
-      autoHideDuration={6000}
-      message={alertState.message}
-      onClose={handleClose}
-      action={action}
-    />
+    <Snackbar open={showSnackBar && open} autoHideDuration={6000}>
+      <Alert
+        className={`${alertState.type}-message`}
+        onClose={handleClose}
+        severity={alertState.type}
+      >
+        {alertState.message}
+      </Alert>
+    </Snackbar>
   );
 };
 
