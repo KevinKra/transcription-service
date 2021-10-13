@@ -39,6 +39,7 @@ const inputSourceUrl = /input-source-url/i;
 const inputSelectSource = /input-select-source-language/i;
 const inputSelectTarget = /input-select-target-language/i;
 const buttonBuildLesson = /build lesson/i;
+const mediaAddress = "https://www.youtube.com/watch?v=0La3aBSjvGY";
 
 describe("SelectMedia", () => {
   describe("when the component mounts", () => {
@@ -70,19 +71,16 @@ describe("SelectMedia", () => {
   });
 
   describe("when a user inputs a url for a youtube video", () => {
-    describe("if the url is valid", () => {
+    describe("if the media address input is valid", () => {
       beforeEach(() => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
-        user.type(
-          screen.getByTestId(inputSourceUrl),
-          "https://www.youtube.com/watch?v=0La3aBSjvGY"
-        );
+        user.type(screen.getByTestId(inputSourceUrl), mediaAddress);
         user.click(screen.getByRole("button", { name: /search/i }));
       });
       test("the VideoPlayer activates with the provided content", async () => {
         expect(
-          await screen.findByTestId(/video-player-enabled/i)
+          await screen.findByTestId(enabledVideoPlayer)
         ).toBeInTheDocument();
       });
 
@@ -110,7 +108,7 @@ describe("SelectMedia", () => {
       });
     });
 
-    describe("if the url is invalid", () => {
+    describe("if the media address input is invalid", () => {
       beforeEach(() => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
@@ -121,7 +119,7 @@ describe("SelectMedia", () => {
         );
       });
 
-      test("all inputs, except the source input, remain disabled", () => {
+      test("all inputs, except the media source input, remain disabled", () => {
         expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
         expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
         expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
@@ -137,25 +135,30 @@ describe("SelectMedia", () => {
     });
   });
 
+  describe("when the user selects a source language", () => {
+    // beforeEach(() => {
+    //   render(<SelectMedia />);
+    //   user.type(
+    //     screen.getByTestId(inputSourceUrl),
+    //     "https://www.youtube.com/watch?v=0La3aBSjvGY"
+    //   );
+    //   user.click(screen.getByRole("button", { name: /search/i }));
+    // });
+    test.todo(
+      "the selected source language does NOT also appear as a target language option"
+    );
+  });
+
   describe("when all inputs have values", () => {
     beforeEach(() => {
       render(<SelectMedia />);
       render(<StyledSnackBar />);
-
-      user.type(
-        screen.getByTestId(/input-source-url/i),
-        "http://localhost:5000/services/youtube/FggwAN76lM0"
-      );
-      // user.click(screen.getByRole("button", { name: /search/i }));
-      // ! the above click event produces a nasty console error in the tests
-      // ! that I can't nail down on how to resolve. The tests still passes,
-      // ! but the "error" creates a massive block of text. Removing this click
-      // ! still works, but it starts to deviate from the exact user flow.
-      user.type(screen.getByTestId(inputSelectSource), "en-US");
+      user.type(screen.getByTestId(inputSourceUrl), mediaAddress);
       const sourceInput = screen.getByTestId("input-select-source-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });
       const targetInput = screen.getByTestId("input-select-target-language");
       fireEvent.change(targetInput, { target: { value: "fr" } });
+      // todo -- cheating the UX flow in this example, is that okay?
     });
 
     test("the submit button is no longer disabled", () => {
@@ -173,13 +176,30 @@ describe("SelectMedia", () => {
         expect(await screen.findByText(/building lesson/i)).toBeInTheDocument();
       });
 
-      test("once the job is complete, a success snackbar appears", () => {
-        const successToast = screen.getByText(
-          /Successfully submitted content/i
-        );
-        expect(successToast).toBeInTheDocument();
+      test.todo("all inputs become disabled");
+
+      describe("if the submission is successful", () => {
+        test("a success snackbar appears", () => {
+          const successToast = screen.getByText(
+            /Successfully submitted content/i
+          );
+          expect(successToast).toBeInTheDocument();
+        });
+
+        test.todo("after a %TBD% delay, the page changes");
       });
-      test.todo("after a delay, the page changes");
+
+      describe("if the submission fails", () => {
+        test.todo("an error snackbar appears");
+        // todo -- explore setting up useful error messages
+        // () => {
+        //   const errorSnackbar = screen.getByText(/error submitting content/i);
+        //   expect(errorSnackbar).toBeInTheDocument();
+        // };
+
+        test.todo("all the fields become enabled");
+        test.todo("the previous values are still present");
+      });
     });
   });
 });
