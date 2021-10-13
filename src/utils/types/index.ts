@@ -63,5 +63,5 @@ export interface ITimeStamp {
 
 export interface IQueryResponse {
   type: "success" | "error" | "found" | "notFound" | "complete" | "loading";
-  data?: any;
+  message?: any;
 }

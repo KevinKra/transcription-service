@@ -6,6 +6,8 @@ import {
 } from "../../../helpers/apiRouteHandler/apiRouteHandler";
 import { IQueryResponse } from "../../../types";
 import axios from "axios";
+import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
+import { AppDispatch } from "../../../../redux/store";
 
 // todo -- port these over to proper redux locations asap
 export interface IAuthor {
@@ -57,11 +59,13 @@ interface IYoutubeResponse {
 }
 
 export interface YTQueryResponse extends IQueryResponse {
-  data?: IYoutubeResponse;
+  message: string | IYoutubeResponse;
+  //   message: any;
 }
 
 const searchYoutubeVideo = async (
-  contentId: string
+  contentId: string,
+  dispatch: AppDispatch
 ): Promise<YTQueryResponse> => {
   const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
     `${contentId}`,
@@ -72,11 +76,21 @@ const searchYoutubeVideo = async (
     // todo -- resolve the above linter rules so this can pass within lint guidelines
     return {
       type: "success",
-      data: response?.data,
+      message: response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
+    console.log("error status", error.response.status);
+    console.log("error data", error.response.data);
+    dispatch(
+      setAlert({
+        type: "warning",
+        message: error.response.message as string,
+        display: "client-only",
+      })
+    );
     return {
-      type: "error",
+      type: error.response.data.type,
+      message: error.response.data.message,
     };
   }
 };

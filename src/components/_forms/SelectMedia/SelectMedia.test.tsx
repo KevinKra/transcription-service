@@ -24,7 +24,7 @@ const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      return res(ctx.json({ type: "found" }));
+      return res(ctx.json({ type: "found", message: "mock" }));
     }
   )
 );
@@ -35,7 +35,7 @@ afterEach(() => server.resetHandlers());
 
 const enabledVideoPlayer = /video-player-enabled/i;
 const disabledVideoPlayer = /video-player-disabled/i;
-const inputSourceUrl = /input-source-url/i;
+const inputMediaUrl = /input-source-url/i;
 const inputSelectSource = /input-select-source-language/i;
 const inputSelectTarget = /input-select-target-language/i;
 const buttonBuildLesson = /build lesson/i;
@@ -75,7 +75,7 @@ describe("SelectMedia", () => {
       beforeEach(() => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
-        user.type(screen.getByTestId(inputSourceUrl), mediaAddress);
+        user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
         user.click(screen.getByRole("button", { name: /search/i }));
       });
       test("the VideoPlayer activates with the provided content", async () => {
@@ -112,11 +112,17 @@ describe("SelectMedia", () => {
       beforeEach(() => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
-        user.click(screen.getByRole("button", { name: /search/i }));
         user.type(
-          screen.getByTestId(inputSourceUrl),
+          screen.getByTestId(inputMediaUrl),
           "https://www.youtube.com/watch?v=invalid"
         );
+        user.click(screen.getByRole("button", { name: /search/i }));
+      });
+
+      test("the VideoPlayer does not activate", async () => {
+        expect(
+          await screen.findByTestId(disabledVideoPlayer)
+        ).toBeInTheDocument();
       });
 
       test("all inputs, except the media source input, remain disabled", () => {
@@ -133,13 +139,52 @@ describe("SelectMedia", () => {
         expect(warningToast).toBeInTheDocument();
       });
     });
+
+    describe("if the media address input is valid, but the video is not found", () => {
+      beforeEach(() => {
+        server.use(
+          rest.get<DefaultRequestBody, YTQueryResponse>(
+            youtubeGetEndpoint,
+            (req, res, ctx) => {
+              return res(
+                // Send a valid HTTP status code
+                ctx.status(404),
+                // And a response body, if necessary
+                ctx.json({
+                  type: "notFound",
+                  message: "Video not found",
+                })
+              );
+            }
+          )
+        );
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+        user.click(screen.getByRole("button", { name: /search/i }));
+      });
+
+      test("the VideoPlayer does not activate", async () => {
+        expect(
+          await screen.findByTestId(disabledVideoPlayer)
+        ).toBeInTheDocument();
+      });
+
+      test("a warning snackbar appears", async () => {
+        const warningSnackbar = await screen.findByText(/video not found/i);
+        expect(warningSnackbar).toBeInTheDocument();
+      });
+
+      test.todo("all the fields become enabled");
+      test.todo("the previous values are still present");
+    });
   });
 
   describe("when the user selects a source language", () => {
     // beforeEach(() => {
     //   render(<SelectMedia />);
     //   user.type(
-    //     screen.getByTestId(inputSourceUrl),
+    //     screen.getByTestId(inputMediaUrl),
     //     "https://www.youtube.com/watch?v=0La3aBSjvGY"
     //   );
     //   user.click(screen.getByRole("button", { name: /search/i }));
@@ -153,7 +198,7 @@ describe("SelectMedia", () => {
     beforeEach(() => {
       render(<SelectMedia />);
       render(<StyledSnackBar />);
-      user.type(screen.getByTestId(inputSourceUrl), mediaAddress);
+      user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
       const sourceInput = screen.getByTestId("input-select-source-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });
       const targetInput = screen.getByTestId("input-select-target-language");
@@ -177,29 +222,6 @@ describe("SelectMedia", () => {
       });
 
       test.todo("all inputs become disabled");
-
-      describe("if the submission is successful", () => {
-        test("a success snackbar appears", () => {
-          const successToast = screen.getByText(
-            /Successfully submitted content/i
-          );
-          expect(successToast).toBeInTheDocument();
-        });
-
-        test.todo("after a %TBD% delay, the page changes");
-      });
-
-      describe("if the submission fails", () => {
-        test.todo("an error snackbar appears");
-        // todo -- explore setting up useful error messages
-        // () => {
-        //   const errorSnackbar = screen.getByText(/error submitting content/i);
-        //   expect(errorSnackbar).toBeInTheDocument();
-        // };
-
-        test.todo("all the fields become enabled");
-        test.todo("the previous values are still present");
-      });
     });
   });
 });

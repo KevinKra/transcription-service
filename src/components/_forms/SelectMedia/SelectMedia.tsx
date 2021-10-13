@@ -33,6 +33,10 @@ const SelectMedia = () => {
 
   const mountedRef = useRef(false);
   // effect is just for tracking mounted state for react-testing-library
+  // todo -- determine if using refs is a good idea
+  // todo -- since it _only_ is being used to resolving a testing
+  // todo -- "memory leak" error in react-testing-library
+  // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -58,20 +62,29 @@ const SelectMedia = () => {
     const youtubeId = youtubeGetId(values.sourceURL);
 
     if (youtubeId.length === 11) {
-      const response = await searchYoutubeVideo(youtubeId);
-      // todo -- determine if using refs is a good idea
-      // todo -- since it _only_ is being used to resolving a testing
-      // todo -- "memory leak" error in react-testing-library
-      // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
+      const response = await searchYoutubeVideo(youtubeId, dispatch);
       if (mountedRef.current) {
-        setShowVideo(true);
-        dispatch(
-          setAlert({
-            type: "success",
-            message: "Video found.",
-            display: "support-both",
-          })
-        );
+        console.log("response", response);
+        if (response.type === "notFound") {
+          console.log("res", response);
+          dispatch(
+            setAlert({
+              type: "warning",
+              message: response.message as string,
+              display: "client-only",
+            })
+          );
+          return setShowVideo(false);
+        } else {
+          setShowVideo(true);
+          dispatch(
+            setAlert({
+              type: "success",
+              message: "Video found.",
+              display: "support-both",
+            })
+          );
+        }
       }
     } else {
       setShowVideo(false);
