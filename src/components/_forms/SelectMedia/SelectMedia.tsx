@@ -1,11 +1,8 @@
-import { TextField, styled, MenuItem, Typography, Button } from "@mui/material";
+import { TextField, styled, MenuItem, Typography } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import {
-  selectAlert,
-  setAlert,
-} from "../../../redux/slices/alertSlice/alertSlice";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setAlert } from "../../../redux/slices/alertSlice/alertSlice";
 import VideoPlayerController from "../../_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";

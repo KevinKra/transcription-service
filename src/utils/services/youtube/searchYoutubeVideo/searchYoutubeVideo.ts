@@ -6,8 +6,6 @@ import {
 } from "../../../helpers/apiRouteHandler/apiRouteHandler";
 import { IQueryResponse } from "../../../types";
 import axios from "axios";
-import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
-import { AppDispatch } from "../../../../redux/store";
 
 // todo -- port these over to proper redux locations asap
 export interface IAuthor {
