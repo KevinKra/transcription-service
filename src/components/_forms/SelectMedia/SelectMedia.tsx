@@ -44,13 +44,12 @@ const SelectMedia = () => {
     };
   }, []);
 
-  const alertState = useAppSelector(selectAlert);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const subscription = watch((allFields) => {
       const fieldValues = Object.values(allFields);
-      const allFieldsHaveInputs = fieldValues.every((field) => !!field);
+      const allFieldsHaveInputs = fieldValues.every((field) => field !== "");
       allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
     });
 
@@ -75,13 +74,11 @@ const SelectMedia = () => {
 
     const response = await searchYoutubeVideo(youtubeId);
     if (mountedRef.current) {
-      console.log("response", response);
       if (response.type === "warning" || response.type === "error") {
-        console.log("res", response);
         dispatch(
           setAlert({
             type: response.type,
-            message: response.message as string,
+            message: response.message,
             display: "client-only",
           })
         );
@@ -91,7 +88,7 @@ const SelectMedia = () => {
         dispatch(
           setAlert({
             type: response.type,
-            message: "Video found.",
+            message: response.message,
             display: "support-both",
           })
         );

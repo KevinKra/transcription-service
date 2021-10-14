@@ -147,9 +147,7 @@ describe("SelectMedia", () => {
             youtubeGetEndpoint,
             (req, res, ctx) => {
               return res(
-                // Send a valid HTTP status code
                 ctx.status(404),
-                // And a response body, if necessary
                 ctx.json({
                   type: "warning",
                   message: "Video not found",

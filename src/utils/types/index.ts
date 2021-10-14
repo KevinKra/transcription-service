@@ -64,8 +64,7 @@ export interface ITimeStamp {
 }
 
 export interface IQueryResponse {
-  //   type: "success" | "error" | "found" | "notFound" | "complete" | "loading";
-  // todo -- determine if I like IAlertStatus, delete above if suitable
   type: IAlertStatus;
-  message?: any;
+  message: string;
+  data?: any;
 }

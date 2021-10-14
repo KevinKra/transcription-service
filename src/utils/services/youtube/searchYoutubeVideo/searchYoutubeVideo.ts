@@ -59,31 +59,27 @@ interface IYoutubeResponse {
 }
 
 export interface YTQueryResponse extends IQueryResponse {
-  message: string | IYoutubeResponse;
+  data?: IYoutubeResponse;
 }
 
 const searchYoutubeVideo = async (
   contentId: string
-  //   dispatch: AppDispatch
 ): Promise<YTQueryResponse> => {
   const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
     `${contentId}`,
   ]);
 
   try {
-    const response: any = await axios.get(youtubeGetEndpoint);
-    // todo -- resolve the above linter rules so this can pass within lint guidelines
+    const response: YTQueryResponse = await axios.get(youtubeGetEndpoint);
     return {
       type: "success",
-      message: response.data,
+      message: "Video found.",
+      data: response.data,
     };
   } catch (error: any) {
-    console.log("error status", error.response?.status);
-    console.log("error data", error.response?.data);
     return {
       type: error.response?.data.type || "error",
-      message:
-        (error.response?.data.message as string) || "Something went wrong.",
+      message: error.response?.data.message || "Something went wrong.",
     };
   }
 };
