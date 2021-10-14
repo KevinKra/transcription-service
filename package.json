@@ -8,6 +8,7 @@
     "start": "next start --port $PORT",
     "lint": "next lint --dir src",
     "test": "jest --verbose",
+    "test:ci": "jest --coverage --silent --ci",
     "test:coverage": "jest  --coverage --watchAll",
     "test:husky": "jest",
     "prepare": "husky install",
