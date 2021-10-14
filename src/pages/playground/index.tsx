@@ -1,5 +1,5 @@
 import SelectMedia from "../../components/_forms/SelectMedia/SelectMedia";
-import VideoPlayerController from "../../components/_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
+// import VideoPlayerController from "../../components/_molecules/VideoPlayer/VideoPlayerController/VideoPlayerController";
 
 const index = () => {
   return (

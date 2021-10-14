@@ -9,9 +9,9 @@ type IVideoPlayerView = Partial<IVideoPlayerController>;
 const VideoPlayerView = ({
   playable = false,
   withDetails,
-  embedURL,
-  timeStamp,
-}: IVideoPlayerView) => {
+}: // embedURL,
+// timeStamp,
+IVideoPlayerView) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useAppDispatch();
 

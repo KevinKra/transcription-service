@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import StyledSnackBar from "./StyledSnackBar";
-import user from "@testing-library/user-event";
+// import user from "@testing-library/user-event";
 
 jest.mock("react-redux", () => {
   return {
