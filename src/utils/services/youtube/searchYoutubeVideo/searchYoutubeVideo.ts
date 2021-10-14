@@ -60,12 +60,11 @@ interface IYoutubeResponse {
 
 export interface YTQueryResponse extends IQueryResponse {
   message: string | IYoutubeResponse;
-  //   message: any;
 }
 
 const searchYoutubeVideo = async (
-  contentId: string,
-  dispatch: AppDispatch
+  contentId: string
+  //   dispatch: AppDispatch
 ): Promise<YTQueryResponse> => {
   const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
     `${contentId}`,
@@ -79,18 +78,12 @@ const searchYoutubeVideo = async (
       message: response.data,
     };
   } catch (error: any) {
-    console.log("error status", error.response.status);
-    console.log("error data", error.response.data);
-    dispatch(
-      setAlert({
-        type: "warning",
-        message: error.response.message as string,
-        display: "client-only",
-      })
-    );
+    console.log("error status", error.response?.status);
+    console.log("error data", error.response?.data);
     return {
-      type: error.response.data.type,
-      message: error.response.data.message,
+      type: error.response?.data.type || "error",
+      message:
+        (error.response?.data.message as string) || "Something went wrong.",
     };
   }
 };

@@ -1,3 +1,5 @@
+import { IAlertStatus } from "../../redux/slices/alertSlice/alertSlice";
+
 // * Selections
 export interface TranscriptSelection {
   id: string;
@@ -62,6 +64,8 @@ export interface ITimeStamp {
 }
 
 export interface IQueryResponse {
-  type: "success" | "error" | "found" | "notFound" | "complete" | "loading";
+  //   type: "success" | "error" | "found" | "notFound" | "complete" | "loading";
+  // todo -- determine if I like IAlertStatus, delete above if suitable
+  type: IAlertStatus;
   message?: any;
 }

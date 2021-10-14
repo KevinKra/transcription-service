@@ -4,7 +4,8 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
-type IAlertStatus = "success" | "warning" | "error";
+// IAlertStatus matches the mui Alert types
+export type IAlertStatus = "success" | "warning" | "error" | "info";
 
 interface IAlertSlice {
   type: IAlertStatus;

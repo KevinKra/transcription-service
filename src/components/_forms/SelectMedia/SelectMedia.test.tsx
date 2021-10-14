@@ -24,7 +24,7 @@ const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      return res(ctx.json({ type: "found", message: "mock" }));
+      return res(ctx.json({ type: "success", message: "mock" }));
     }
   )
 );
@@ -151,7 +151,7 @@ describe("SelectMedia", () => {
                 ctx.status(404),
                 // And a response body, if necessary
                 ctx.json({
-                  type: "notFound",
+                  type: "warning",
                   message: "Video not found",
                 })
               );

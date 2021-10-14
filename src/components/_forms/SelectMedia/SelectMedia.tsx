@@ -61,32 +61,7 @@ const SelectMedia = () => {
     const values = getValues();
     const youtubeId = youtubeGetId(values.sourceURL);
 
-    if (youtubeId.length === 11) {
-      const response = await searchYoutubeVideo(youtubeId, dispatch);
-      if (mountedRef.current) {
-        console.log("response", response);
-        if (response.type === "notFound") {
-          console.log("res", response);
-          dispatch(
-            setAlert({
-              type: "warning",
-              message: response.message as string,
-              display: "client-only",
-            })
-          );
-          return setShowVideo(false);
-        } else {
-          setShowVideo(true);
-          dispatch(
-            setAlert({
-              type: "success",
-              message: "Video found.",
-              display: "support-both",
-            })
-          );
-        }
-      }
-    } else {
+    if (youtubeId.length !== 11) {
       setShowVideo(false);
       dispatch(
         setAlert({
@@ -95,6 +70,32 @@ const SelectMedia = () => {
           display: "support-both",
         })
       );
+      return;
+    }
+
+    const response = await searchYoutubeVideo(youtubeId);
+    if (mountedRef.current) {
+      console.log("response", response);
+      if (response.type === "warning" || response.type === "error") {
+        console.log("res", response);
+        dispatch(
+          setAlert({
+            type: response.type,
+            message: response.message as string,
+            display: "client-only",
+          })
+        );
+        return setShowVideo(false);
+      } else {
+        setShowVideo(true);
+        dispatch(
+          setAlert({
+            type: response.type,
+            message: "Video found.",
+            display: "support-both",
+          })
+        );
+      }
     }
   };
 
