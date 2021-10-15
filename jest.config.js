@@ -7,5 +7,7 @@ module.exports = {
       tsconfig: "./tsconfig.jest.json",
     },
   },
+  // cypress uses the chai assertion library
+  testPathIgnorePatterns: ["./cypress"],
   setupFilesAfterEnv: ["./jest.setup.ts"],
 };
