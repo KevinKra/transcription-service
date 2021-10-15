@@ -11,6 +11,7 @@
     "test:ci": "jest --coverage --silent --ci",
     "test:coverage": "jest  --coverage --watchAll",
     "test:husky": "jest",
+    "cypress:open": "cypress open",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
@@ -38,6 +39,7 @@
     "react-redux": "^7.2.5"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.1",
     "@testing-library/dom": "^8.7.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
@@ -46,6 +48,8 @@
     "@types/react": "17.0.27",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "chai": "^4.3.4",
+    "cypress": "^8.6.0",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-plugin-jest": "^24.5.2",
