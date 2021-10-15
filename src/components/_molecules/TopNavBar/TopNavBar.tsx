@@ -16,6 +16,11 @@ const TopNavBar = (props: INavBar) => {
         </Typography>
       </Link>
       <AsideRight>
+        <Link id="link-hero-title" href="/build">
+          <Typography variant="body1" component="h1">
+            Create Lessons
+          </Typography>
+        </Link>
         <ThemeSwitch {...props} />
         <Button id="button-sign-in">Sign in</Button>
         <Button variant="contained">Sign up</Button>
@@ -42,7 +47,8 @@ const Wrapper = styled("nav")`
 const AsideRight = styled("aside")`
   display: grid;
   grid-template-rows: 2.5rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
   column-gap: 1rem;
 
   #button-sign-in {
