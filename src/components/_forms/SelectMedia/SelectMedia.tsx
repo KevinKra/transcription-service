@@ -193,6 +193,7 @@ const SelectMedia = () => {
                   <TextField
                     select
                     fullWidth
+                    name="target-language"
                     label="Target Language"
                     variant="filled"
                     value={value}

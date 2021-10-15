@@ -18,6 +18,7 @@ describe("Start building a dynamic lesson", () => {
   });
 
   it("fills and submits the initial 'SelectMedia' form", () => {
+    // fills in youtube address input
     cy.findByTestId(/input-source-url/i)
       .type(validMediaEndpoint)
       .should("have.value", validMediaEndpoint);
@@ -25,11 +26,29 @@ describe("Start building a dynamic lesson", () => {
       name: /search/i,
     }).click();
 
+    // confirms inputs are not disabled
     cy.get('[name="source-language"]')
       .parent()
       .should("not.have.class", "Mui-disabled");
 
+    // fills in source language input
     cy.get('[name="source-language"]').parent().click();
+    cy.findByRole("option", {
+      name: /english/i,
+    }).click();
+    cy.get('[name="source-language"]').should("have.value", "en-US");
+    cy.get('[name="source-language"]').parent().should("have.text", "English");
+
+    // fills in target language input
+    cy.get('[name="target-language"]').parent().click();
+    cy.findByRole("option", {
+      name: /french/i,
+    }).click();
+    cy.get('[name="target-language"]').should("have.value", "fr");
+    cy.get('[name="target-language"]').parent().should("have.text", "French");
+
+    // clicks build lesson button
+    cy.findByRole("button", { name: /build lesson/i }).click();
   });
 });
 
