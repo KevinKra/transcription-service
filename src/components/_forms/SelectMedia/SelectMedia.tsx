@@ -151,7 +151,7 @@ const SelectMedia = () => {
                   "data-testid": "input-source-url",
                 }}
                 variant="filled"
-                disabled={false}
+                disabled={contentSubmitted || false}
                 placeholder="https://www.youtube.com/watch?v=0La3aBSjvGY"
                 error={!!errors.sourceURL}
                 helperText={
@@ -180,7 +180,7 @@ const SelectMedia = () => {
                     label="Source Language"
                     variant="filled"
                     value={value}
-                    disabled={showVideo ? false : true}
+                    disabled={contentSubmitted || !showVideo}
                     error={!!errors.sourceLanguage}
                     onChange={onChange}
                     inputProps={{
@@ -220,7 +220,7 @@ const SelectMedia = () => {
                     label="Target Language"
                     variant="filled"
                     value={value}
-                    disabled={showVideo ? false : true}
+                    disabled={contentSubmitted || !showVideo}
                     error={!!errors.targetLanguage}
                     onChange={onChange}
                     inputProps={{

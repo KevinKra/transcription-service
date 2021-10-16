@@ -179,14 +179,14 @@ describe("SelectMedia", () => {
         ).toBeDisabled();
       });
 
-      test("a warning snackbar appears", async () => {
+      test("a warning toast message appears", async () => {
         const warningSnackbar = await screen.findByText(/video not found/i);
         expect(warningSnackbar).toBeInTheDocument();
       });
     });
   });
 
-  describe("when the user selects a source language", () => {
+  describe("when a user selects an option from a language select input", () => {
     beforeEach(() => {
       render(<SelectMedia />);
       user.type(
@@ -196,7 +196,7 @@ describe("SelectMedia", () => {
       user.click(screen.getByRole("button", { name: /search/i }));
     });
 
-    test("it cannot match the target language option", async () => {
+    test("the sibling language select input does not have the same option available", async () => {
       await waitFor(() =>
         expect(screen.getByTestId(inputSelectSource)).toBeEnabled()
       );
@@ -236,7 +236,18 @@ describe("SelectMedia", () => {
         expect(await screen.findByText(/building lesson/i)).toBeInTheDocument();
       });
 
-      test.todo("all inputs become disabled");
+      test("all inputs become disabled", async () => {
+        const buildButton = screen.getByRole("button", {
+          name: buttonBuildLesson,
+        });
+        user.click(buildButton);
+        expect(await screen.findByTestId(inputMediaUrl)).toBeDisabled();
+        expect(await screen.findByTestId(inputSelectSource)).toBeDisabled();
+        expect(await screen.findByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          await screen.findByRole("button", { name: /building lesson/i })
+        ).toBeDisabled();
+      });
 
       describe("it's able to handle a successful call", () => {
         test.todo("a success notification appears");
