@@ -203,9 +203,9 @@ describe("SelectMedia", () => {
       const sourceInput = screen.getByTestId("input-select-source-language");
       const targetInput = screen.getByTestId("input-select-target-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });
-      fireEvent.change(targetInput, { target: { value: "en" } });
-      // expect(screen.getByText(/english/i)).toBeInTheDocument();
-      // single query, multiple "english" values will fail assertion.
+      fireEvent.change(targetInput, { target: { value: "en-US" } });
+      // ? getByText() fails if MULTIPLE matches are found. So, if it finds one, success.
+      expect(screen.getByText(/english/i)).toBeInTheDocument();
     });
   });
 
@@ -217,7 +217,7 @@ describe("SelectMedia", () => {
       const sourceInput = screen.getByTestId("input-select-source-language");
       const targetInput = screen.getByTestId("input-select-target-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });
-      fireEvent.change(targetInput, { target: { value: "fr" } });
+      fireEvent.change(targetInput, { target: { value: "fr-FR" } });
       // todo -- cheating the UX flow in this example, is that okay?
     });
 

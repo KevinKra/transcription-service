@@ -19,6 +19,8 @@ const SelectMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [contentSubmitted, setContentSubmitted] = useState(false);
+  const [sourceLanguage, setSourceLanguage] = useState<string>();
+  const [targetLanguage, setTargetLanguage] = useState<string>();
 
   const {
     control,
@@ -44,20 +46,9 @@ const SelectMedia = () => {
 
   useEffect(() => {
     const subscription = watch((allFields) => {
-      // console.log("af", allFields);
-      // const { sourceLanguage, targetLanguage } = allFields;
-      // const sourceLang = sourceLanguage.split("-")[0];
-      // if (sourceLang === targetLanguage) {
-      //   dispatch(
-      //     setAlert({
-      //       type: "warning",
-      //       message: "Languages cannot match.",
-      //       display: "support-both",
-      //     })
-      //   );
-      //   setSubmitDisabled(true);
-      //   return;
-      // }
+      const { sourceLanguage, targetLanguage } = allFields;
+      setSourceLanguage(sourceLanguage);
+      setTargetLanguage(targetLanguage);
       const fieldValues = Object.values(allFields);
       const allFieldsHaveInputs = fieldValues.every((field) => field !== "");
       allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
@@ -106,7 +97,8 @@ const SelectMedia = () => {
     }
   };
 
-  const optionsMapper = (removeDialect: boolean) => {
+  const optionsMapper = (languageCode?: string) => {
+    // todo -- write tests for this util
     type languageSelection = { name: string; code: string };
 
     const supportedLanguages: languageSelection[] = [
@@ -115,14 +107,11 @@ const SelectMedia = () => {
       { name: "spanish", code: "es-ES" },
       { name: "german", code: "de-DE" },
     ];
-    if (removeDialect) {
-      return supportedLanguages.map((language) => {
-        const dialectRemoved = language.code.split("-")[0];
-        return { ...language, code: dialectRemoved };
-      });
-    } else {
-      return supportedLanguages;
-    }
+    if (!languageCode) return supportedLanguages;
+    const filteredLanguages = supportedLanguages.filter((language) => {
+      return language.code.toLowerCase() !== languageCode.toLowerCase();
+    });
+    return filteredLanguages;
   };
 
   const onSubmit: SubmitHandler<IFormInputs> = () => {
@@ -203,7 +192,7 @@ const SelectMedia = () => {
                         : "Select the language used in the provided media"
                     }
                   >
-                    {optionsMapper(false).map(({ code, name }, i) => {
+                    {optionsMapper(targetLanguage).map(({ code, name }, i) => {
                       return (
                         <MenuItem key={i} value={code}>
                           {name}
@@ -243,7 +232,7 @@ const SelectMedia = () => {
                         : "Select a language to translate the content into"
                     }
                   >
-                    {optionsMapper(true).map(({ code, name }, i) => {
+                    {optionsMapper(sourceLanguage).map(({ code, name }, i) => {
                       return (
                         <MenuItem key={i} value={code}>
                           {name}
