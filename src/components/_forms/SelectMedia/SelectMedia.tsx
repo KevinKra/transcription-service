@@ -1,4 +1,4 @@
-import { TextField, styled, MenuItem, Typography } from "@mui/material";
+import { TextField, styled, MenuItem, Typography, Paper } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../../redux/hooks";
@@ -128,15 +128,15 @@ const SelectMedia = () => {
   };
 
   return (
-    <SelectMediaWrapper>
-      <div>
+    <SelectMediaWrapper elevation={5}>
+      <section>
         <VideoPlayerController
           playable={showVideo}
           withDetails={false}
           embedURL="https://www.youtube.com/watch?v=0La3aBSjvGY"
           timeStamp={{ startTime: 0, endTime: 10 }}
         />
-      </div>
+      </section>
       <button onClick={onSearch}>Search</button>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControlInputs>
@@ -166,7 +166,7 @@ const SelectMedia = () => {
             )}
           />
 
-          <SelectInputWrapper>
+          <SelectInputsWrapper>
             <Typography variant="overline">Language Mapping</Typography>
             <SelectWrapper>
               <Controller
@@ -180,7 +180,7 @@ const SelectMedia = () => {
                     fullWidth
                     name="source-language"
                     label="Source Language"
-                    variant="filled"
+                    variant="outlined"
                     value={value}
                     disabled={contentSubmitted || !showVideo}
                     error={!!errors.sourceLanguage}
@@ -205,9 +205,6 @@ const SelectMedia = () => {
                 )}
               />
             </SelectWrapper>
-          </SelectInputWrapper>
-          <SelectInputWrapper>
-            <Typography variant="overline">Language Mapping</Typography>
             <SelectWrapper>
               <Controller
                 name="targetLanguage"
@@ -220,7 +217,7 @@ const SelectMedia = () => {
                     fullWidth
                     name="target-language"
                     label="Target Language"
-                    variant="filled"
+                    variant="outlined"
                     value={value}
                     disabled={contentSubmitted || !showVideo}
                     error={!!errors.targetLanguage}
@@ -245,7 +242,7 @@ const SelectMedia = () => {
                 )}
               />
             </SelectWrapper>
-          </SelectInputWrapper>
+          </SelectInputsWrapper>
           <LoadingButton
             endIcon={<SendIcon />}
             loading={contentSubmitted}
@@ -264,19 +261,22 @@ const SelectMedia = () => {
 
 export default SelectMedia;
 
-const SelectMediaWrapper = styled("section")`
-  border: 1px solid blue;
+const SelectMediaWrapper = styled(Paper)`
   width: 450px;
-`;
-
-const FormControlInputs = styled("div")`
-  border: 1px solid red;
+  padding: 1rem;
 `;
 
 const SelectWrapper = styled("div")`
-  border: 1px solid red;
+  /* border: 1px solid green; */
+  margin-bottom: 0.5rem;
 `;
 
-const SelectInputWrapper = styled("div")`
-  border: 1px solid blue;
+const FormControlInputs = styled("div")`
+  margin-top: 1rem;
+`;
+
+const SelectInputsWrapper = styled("div")`
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  /* border: 1px solid red; */
 `;

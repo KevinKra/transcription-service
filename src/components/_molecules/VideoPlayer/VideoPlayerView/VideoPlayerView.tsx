@@ -15,6 +15,8 @@ const VideoPlayerView = ({
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useAppDispatch();
 
+  // todo -- test the withDetails playable behaviors
+
   return playable ? (
     <VideoPlayerWrapper>
       <ActivePlayer data-testid="video-player-enabled">
@@ -62,7 +64,7 @@ const VideoPlayerView = ({
       >
         <p>Inactive</p>
       </DisabledPlayer>
-      <Button disabled>Show Details</Button>
+      {withDetails && <Button disabled>Show Details</Button>}
     </VideoPlayerWrapper>
   );
 };
@@ -70,17 +72,16 @@ const VideoPlayerView = ({
 export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
-  border: 1px solid red;
-  width: 450px;
+  /* border: 1px solid red; */
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 const Player = styled("div")`
   display: grid;
   place-items: center;
-  border: 1px solid blue;
-  height: 300px;
-  width: 450px;
+  height: 275px;
 `;
+
 const ActivePlayer = styled(Player)``;
 const DisabledPlayer = styled(Player)``;
 
