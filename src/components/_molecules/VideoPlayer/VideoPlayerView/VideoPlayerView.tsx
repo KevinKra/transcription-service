@@ -56,7 +56,7 @@ const VideoPlayerView = ({
           dispatch(
             setAlert({
               type: "warning",
-              message: "No media selected",
+              message: "No media has been provided to the video player.",
               display: "client-only",
             })
           )
