@@ -11,4 +11,7 @@ const Index = () => {
 
 export default Index;
 
-const Page = styled("div")``;
+const Page = styled("div")`
+  display: grid;
+  place-items: center;
+`;

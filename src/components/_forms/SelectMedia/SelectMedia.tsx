@@ -267,8 +267,7 @@ const SelectMediaWrapper = styled(Paper)`
 `;
 
 const SelectWrapper = styled("div")`
-  /* border: 1px solid green; */
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 `;
 
 const FormControlInputs = styled("div")`
@@ -278,5 +277,4 @@ const FormControlInputs = styled("div")`
 const SelectInputsWrapper = styled("div")`
   margin-top: 1rem;
   margin-bottom: 1.5rem;
-  /* border: 1px solid red; */
 `;
