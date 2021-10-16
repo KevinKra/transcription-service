@@ -31,7 +31,6 @@ const SelectMedia = () => {
   const mountedRef = useRef(false);
   // effect is just for tracking mounted state for react-testing-library
   // todo -- determine if using refs is a good idea
-  // todo -- since it _only_ is being used to resolving a testing
   // todo -- "memory leak" error in react-testing-library
   // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
   useEffect(() => {
@@ -45,6 +44,20 @@ const SelectMedia = () => {
 
   useEffect(() => {
     const subscription = watch((allFields) => {
+      // console.log("af", allFields);
+      // const { sourceLanguage, targetLanguage } = allFields;
+      // const sourceLang = sourceLanguage.split("-")[0];
+      // if (sourceLang === targetLanguage) {
+      //   dispatch(
+      //     setAlert({
+      //       type: "warning",
+      //       message: "Languages cannot match.",
+      //       display: "support-both",
+      //     })
+      //   );
+      //   setSubmitDisabled(true);
+      //   return;
+      // }
       const fieldValues = Object.values(allFields);
       const allFieldsHaveInputs = fieldValues.every((field) => field !== "");
       allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
@@ -90,6 +103,25 @@ const SelectMedia = () => {
           })
         );
       }
+    }
+  };
+
+  const optionsMapper = (removeDialect: boolean) => {
+    type languageSelection = { name: string; code: string };
+
+    const supportedLanguages: languageSelection[] = [
+      { name: "english", code: "en-US" },
+      { name: "french", code: "fr-FR" },
+      { name: "spanish", code: "es-ES" },
+      { name: "german", code: "de-DE" },
+    ];
+    if (removeDialect) {
+      return supportedLanguages.map((language) => {
+        const dialectRemoved = language.code.split("-")[0];
+        return { ...language, code: dialectRemoved };
+      });
+    } else {
+      return supportedLanguages;
     }
   };
 
@@ -171,11 +203,13 @@ const SelectMedia = () => {
                         : "Select the language used in the provided media"
                     }
                   >
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="en-US">English</MenuItem>
-                    <MenuItem value="fr-FR">French</MenuItem>
-                    <MenuItem value="es-ES">Spanish</MenuItem>
-                    <MenuItem value="de-DE">German</MenuItem>
+                    {optionsMapper(false).map(({ code, name }, i) => {
+                      return (
+                        <MenuItem key={i} value={code}>
+                          {name}
+                        </MenuItem>
+                      );
+                    })}
                   </TextField>
                 )}
               />
@@ -209,11 +243,13 @@ const SelectMedia = () => {
                         : "Select a language to translate the content into"
                     }
                   >
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="fr">French</MenuItem>
-                    <MenuItem value="es">Spanish</MenuItem>
-                    <MenuItem value="de">German</MenuItem>
+                    {optionsMapper(true).map(({ code, name }, i) => {
+                      return (
+                        <MenuItem key={i} value={code}>
+                          {name}
+                        </MenuItem>
+                      );
+                    })}
                   </TextField>
                 )}
               />
