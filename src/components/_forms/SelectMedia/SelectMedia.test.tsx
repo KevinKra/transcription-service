@@ -24,7 +24,35 @@ const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      return res(ctx.json({ type: "success", message: "mock" }));
+      return res(
+        ctx.json({
+          type: "success",
+          message: "mock",
+          data: {
+            type: "success",
+            data: {
+              content: {
+                title: "",
+                description: "",
+                category: "",
+                lengthSeconds: "",
+                videoId: "",
+                videoURL: "",
+                uploadDate: "",
+                keywords: [""],
+                ageRestricted: false,
+                isFamilySafe: false,
+                chapters: [],
+                videoThumbnails: [{ url: "", width: 0, height: 0 }],
+                embed: {
+                  iframeURL: "https://www.youtube.com/embed/0La3aBSjvGY",
+                },
+              },
+              author: "TEMP_MOCK_ANY",
+            },
+          },
+        })
+      );
     }
   )
 );

@@ -17,8 +17,16 @@ jest.mock("react-redux", () => {
 describe("VideoPlayerView", () => {
   describe("when the component mounts", () => {
     describe("if no props are provided", () => {
+      // todo -- rewrite this test. Not sure if I will use partials going forward. tbd.
       beforeEach(() => {
-        render(<VideoPlayerView />);
+        render(
+          <VideoPlayerView
+            playable={false}
+            withDetails={true}
+            embedURL="123"
+            timeStamp={{ startTime: 0, endTime: 10 }}
+          />
+        );
       });
 
       test("the player's video section appears in the default no-video format", () => {
@@ -54,7 +62,7 @@ describe("VideoPlayerView", () => {
       });
 
       test("the video automatically plays", () => {
-        expect(screen.getByText(/active/i)).toBeInTheDocument();
+        expect(screen.getByTestId(/video-player-enabled/i)).toBeInTheDocument();
       });
 
       test("the player's 'show details' button is enabled", () => {

@@ -4,21 +4,31 @@ import { useState } from "react";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 
-type IVideoPlayerView = Partial<IVideoPlayerController>;
+type IVideoPlayerView = IVideoPlayerController;
 
 const VideoPlayerView = ({
   playable = false,
   withDetails,
-}: // embedURL,
-// timeStamp,
-IVideoPlayerView) => {
+  timeStamp,
+  embedURL,
+}: IVideoPlayerView) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useAppDispatch();
 
   return playable ? (
     <VideoPlayerWrapper>
       <ActivePlayer data-testid="video-player-enabled">
-        <p>Active</p>
+        <iframe
+          width="100%"
+          height="100%"
+          src={`${embedURL}?autoplay=1&start=${timeStamp.startTime + 1 || 0}${
+            timeStamp.endTime && `&end=${timeStamp.endTime}`
+          }`}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="Embedded youtube"
+        />
       </ActivePlayer>
       {withDetails && (
         <DetailsSection>

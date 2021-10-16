@@ -8,6 +8,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
+import { IMedia, setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 
 type IFormInputs = {
   sourceURL: string;
@@ -86,6 +87,7 @@ const SelectMedia = () => {
         return setShowVideo(false);
       } else {
         setShowVideo(true);
+        dispatch(setMedia(response.data?.data.content as IMedia));
         dispatch(
           setAlert({
             type: response.type,
@@ -131,7 +133,7 @@ const SelectMedia = () => {
         <VideoPlayerController
           playable={showVideo}
           withDetails={false}
-          embedURL=""
+          embedURL="https://www.youtube.com/watch?v=0La3aBSjvGY"
           timeStamp={{ startTime: 0, endTime: 10 }}
         />
       </div>

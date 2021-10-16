@@ -3,9 +3,10 @@ import { render as rtlRender } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import alertReducer from "../redux/slices/alertSlice/alertSlice";
+import mediaReducer from "../redux/slices/mediaSlice/mediaSlice";
 
 const store = configureStore({
-  reducer: { alert: alertReducer },
+  reducer: { alert: alertReducer, media: mediaReducer },
 });
 
 const render = (children: JSX.Element) =>

@@ -1,3 +1,5 @@
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectMedia } from "../../../../redux/slices/mediaSlice/mediaSlice";
 import VideoPlayerView from "../VideoPlayerView/VideoPlayerView";
 
 export interface IVideoPlayerController {
@@ -11,7 +13,9 @@ export interface IVideoPlayerController {
 }
 
 const VideoPlayerController = (props: IVideoPlayerController) => {
-  return <VideoPlayerView {...props} />;
+  const media = useAppSelector(selectMedia);
+
+  return <VideoPlayerView {...props} embedURL={media.embed.iframeURL} />;
 };
 
 export default VideoPlayerController;
