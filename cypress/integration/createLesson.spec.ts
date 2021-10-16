@@ -40,7 +40,7 @@ describe("Complete the first form (SelectMedia)", () => {
       name: /english/i,
     }).click();
     cy.get('[name="source-language"]').should("have.value", "en-US");
-    cy.get('[name="source-language"]').parent().should("have.text", "English");
+    cy.get('[name="source-language"]').parent().should("have.text", "english");
   });
 
   it("fills in target language input", () => {
@@ -48,8 +48,8 @@ describe("Complete the first form (SelectMedia)", () => {
     cy.findByRole("option", {
       name: /french/i,
     }).click();
-    cy.get('[name="target-language"]').should("have.value", "fr");
-    cy.get('[name="target-language"]').parent().should("have.text", "French");
+    cy.get('[name="target-language"]').should("have.value", "fr-FR");
+    cy.get('[name="target-language"]').parent().should("have.text", "french");
   });
 
   it("clicks the build lesson button", () => {
