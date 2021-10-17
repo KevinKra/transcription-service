@@ -32,7 +32,7 @@ export interface IMedia {
   };
 }
 
-const initialState: IMedia = {
+export const MediaMock: IMedia = {
   title: "",
   description: "",
   category: "",
@@ -49,6 +49,8 @@ const initialState: IMedia = {
     iframeURL: "",
   },
 };
+
+const initialState = MediaMock;
 
 export const mediaSlice = createSlice({
   name: "media",

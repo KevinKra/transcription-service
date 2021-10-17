@@ -4,36 +4,34 @@ import {
   getApiAddress,
   ApiEndpointsEnum,
 } from "../../../helpers/apiRouteHandler/apiRouteHandler";
-import { IQueryResponse } from "../../../types";
+import { IAxiosResponse } from "../../../types";
 import axios from "axios";
 import { IMedia } from "../../../../redux/slices/mediaSlice/mediaSlice";
 import { IAuthor } from "../../../../redux/slices/authorSlice/authorSlice";
 
 interface IYoutubeResponse {
-  type: string;
-  data: {
-    content: IMedia;
-    author: IAuthor;
-  };
+  media: IMedia;
+  author: IAuthor;
 }
 
-export interface YTQueryResponse extends IQueryResponse {
-  data?: IYoutubeResponse;
+export interface YTQueryResponse extends IAxiosResponse {
+  data: IAxiosResponse["data"] & { data?: IYoutubeResponse }; // unknown
+  // data: Omit<IAxiosResponse["data"], "data"> & { data?: IYoutubeResponse }; // any
 }
 
 const searchYoutubeVideo = async (
   contentId: string
-): Promise<YTQueryResponse> => {
+): Promise<YTQueryResponse["data"]> => {
   const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
     `${contentId}`,
   ]);
 
   try {
-    const response: YTQueryResponse = await axios.get(youtubeGetEndpoint);
+    const response: IAxiosResponse = await axios.get(youtubeGetEndpoint);
     return {
-      type: "success",
-      message: response.message || "Video Found.",
-      data: response.data,
+      type: response.data.type,
+      message: response.data.message,
+      data: response.data.data as IYoutubeResponse,
     };
   } catch (error: any) {
     return {

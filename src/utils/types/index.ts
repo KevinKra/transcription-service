@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IAlertStatus } from "../../redux/slices/alertSlice/alertSlice";
 
 // * Selections
@@ -63,8 +64,10 @@ export interface ITimeStamp {
   endTime?: number;
 }
 
-export interface IQueryResponse {
-  type: IAlertStatus;
-  message: string;
-  data?: any;
+export interface IAxiosResponse {
+  data: {
+    type: IAlertStatus;
+    message: string;
+    data?: unknown;
+  };
 }

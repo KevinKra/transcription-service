@@ -21,7 +21,7 @@ const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
 
-const mediaContentMock: IMedia = {
+const mediaMock: IMedia = {
   title: "",
   description: "",
   category: "",
@@ -53,19 +53,16 @@ const authorMock: IAuthor = {
 
 const server = setupServer(
   // todo -- refine typing
-  rest.get<DefaultRequestBody, YTQueryResponse>(
+  rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
       return res(
         ctx.json({
           type: "success",
-          message: "mock",
+          message: "video found",
           data: {
-            type: "found",
-            data: {
-              content: mediaContentMock,
-              author: authorMock,
-            },
+            media: mediaMock,
+            author: authorMock,
           },
         })
       );
@@ -188,7 +185,7 @@ describe("SelectMedia", () => {
     describe("if the media address input is valid, but the video is not found", () => {
       beforeEach(() => {
         server.use(
-          rest.get<DefaultRequestBody, YTQueryResponse>(
+          rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
             youtubeGetEndpoint,
             (req, res, ctx) => {
               return res(
