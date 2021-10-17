@@ -46,7 +46,7 @@ const searchYoutubeVideo = async (
     const response: YTQueryResponse = await axios.get(youtubeGetEndpoint);
     return {
       type: "success",
-      message: "Video found.",
+      message: response.message || "Video Found.",
       data: response.data,
     };
   } catch (error: any) {

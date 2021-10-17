@@ -48,7 +48,7 @@ const server = setupServer(
           type: "success",
           message: "mock",
           data: {
-            type: "success",
+            type: "found",
             data: {
               content: mediaContentMock,
               author: "TEMP_MOCK_ANY",
