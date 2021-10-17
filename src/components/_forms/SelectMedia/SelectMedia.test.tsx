@@ -15,7 +15,7 @@ import {
 import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
 import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
-import { IAuthor } from "../../../redux/slices/authorSlice/authorSlice";
+import { authorMock } from "../../../redux/slices/authorSlice/authorSlice";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
@@ -37,18 +37,6 @@ const mediaMock: IMedia = {
   embed: {
     iframeURL: "https://www.youtube.com/embed/0La3aBSjvGY",
   },
-};
-
-const authorMock: IAuthor = {
-  id: "",
-  name: "",
-  youtube: "",
-  patreon: "",
-  primaryLanguage: "",
-  primaryTopic: "",
-  channelURL: "",
-  userURL: "",
-  thumbnails: [],
 };
 
 const server = setupServer(
