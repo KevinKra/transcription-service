@@ -16,7 +16,7 @@ export interface IAuthor {
   thumbnails: { height: number; width: number }[];
 }
 
-const initialState: IAuthor = {
+export const AuthorMock: IAuthor = {
   id: "",
   name: "",
   youtube: "",
@@ -27,6 +27,8 @@ const initialState: IAuthor = {
   userURL: "",
   thumbnails: [],
 };
+
+const initialState = AuthorMock;
 
 export const authorSlice = createSlice({
   name: "author",

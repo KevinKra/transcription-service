@@ -34,8 +34,9 @@ const searchYoutubeVideo = async (
       data: response.data.data as IYoutubeResponse,
     };
   } catch (error: any) {
+    console.log(error);
     return {
-      type: error.response.data.type || "error",
+      type: error.response?.data.type || "error",
       message: error.response?.data.message || "Something went wrong.",
     };
   }
