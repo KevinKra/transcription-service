@@ -30,7 +30,6 @@ describe("StyledSnackBar", () => {
     render(<StyledSnackBar />);
   });
 
-  // eslint-disable-next-line jest/no-commented-out-tests
   test("if close button is clicked, the snackbar disappears from the screen", async () => {
     const snackbar = screen.queryByText(
       "No media has been provided to the video player."
