@@ -9,6 +9,10 @@ import SendIcon from "@mui/icons-material/Send";
 import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import { IMedia, setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
+import {
+  IAuthor,
+  setAuthor,
+} from "../../../redux/slices/authorSlice/authorSlice";
 
 type IFormInputs = {
   sourceURL: string;
@@ -88,6 +92,7 @@ const SelectMedia = () => {
       } else {
         setShowVideo(true);
         dispatch(setMedia(response.data?.data.content as IMedia));
+        dispatch(setAuthor(response.data?.data.author as IAuthor));
         dispatch(
           setAlert({
             type: response.type,

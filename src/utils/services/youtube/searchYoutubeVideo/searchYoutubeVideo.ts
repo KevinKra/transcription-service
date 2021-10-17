@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// todo -- might be using 2 linters (next and eslint)
 import {
   getApiAddress,
   ApiEndpointsEnum,
@@ -8,26 +7,13 @@ import {
 import { IQueryResponse } from "../../../types";
 import axios from "axios";
 import { IMedia } from "../../../../redux/slices/mediaSlice/mediaSlice";
-
-// todo -- port these over to proper redux locations asap
-export interface IAuthor {
-  id: string;
-  name: string;
-  youtube: string;
-  patreon: string;
-  primaryLanguage: string;
-  primaryTopic: string;
-  channelURL: string;
-  userURL: string;
-  thumbnails: { height: number; width: number }[];
-}
+import { IAuthor } from "../../../../redux/slices/authorSlice/authorSlice";
 
 interface IYoutubeResponse {
   type: string;
   data: {
     content: IMedia;
-    author: any;
-    // author: IAuthor;
+    author: IAuthor;
   };
 }
 

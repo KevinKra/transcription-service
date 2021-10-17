@@ -15,6 +15,7 @@ import {
 import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
 import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
+import { IAuthor } from "../../../redux/slices/authorSlice/authorSlice";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
@@ -38,6 +39,18 @@ const mediaContentMock: IMedia = {
   },
 };
 
+const authorMock: IAuthor = {
+  id: "",
+  name: "",
+  youtube: "",
+  patreon: "",
+  primaryLanguage: "",
+  primaryTopic: "",
+  channelURL: "",
+  userURL: "",
+  thumbnails: [],
+};
+
 const server = setupServer(
   // todo -- refine typing
   rest.get<DefaultRequestBody, YTQueryResponse>(
@@ -51,7 +64,7 @@ const server = setupServer(
             type: "found",
             data: {
               content: mediaContentMock,
-              author: "TEMP_MOCK_ANY",
+              author: authorMock,
             },
           },
         })
