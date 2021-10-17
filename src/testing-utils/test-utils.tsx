@@ -1,15 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { render as rtlRender } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import alertReducer from "../redux/slices/alertSlice/alertSlice";
+import mediaReducer from "../redux/slices/mediaSlice/mediaSlice";
 
 const store = configureStore({
-  reducer: { alert: alertReducer },
+  reducer: { alert: alertReducer, media: mediaReducer },
+  // preloadedState,
 });
 
-const render = (children: JSX.Element) =>
+const render = (children: JSX.Element) => {
   rtlRender(<Provider store={store}>{children}</Provider>);
+};
 
 // re-export everything
 export * from "@testing-library/react";

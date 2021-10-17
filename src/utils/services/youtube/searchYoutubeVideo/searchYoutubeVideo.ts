@@ -7,6 +7,7 @@ import {
 } from "../../../helpers/apiRouteHandler/apiRouteHandler";
 import { IQueryResponse } from "../../../types";
 import axios from "axios";
+import { IMedia } from "../../../../redux/slices/mediaSlice/mediaSlice";
 
 // todo -- port these over to proper redux locations asap
 export interface IAuthor {
@@ -21,39 +22,12 @@ export interface IAuthor {
   thumbnails: { height: number; width: number }[];
 }
 
-export interface IVideoThumbnail {
-  url: string;
-  width: number;
-  height: number;
-}
-export interface IVideoChapter {
-  title: string;
-  startTime: number;
-}
-
-export interface IMediaContent {
-  title: string;
-  description: string;
-  category: string;
-  lengthSeconds: string;
-  videoId: string;
-  videoURL: string;
-  uploadDate: string;
-  keywords: string[];
-  ageRestricted: boolean;
-  isFamilySafe: boolean;
-  chapters: IVideoChapter[];
-  videoThumbnails: IVideoThumbnail[];
-  embed: {
-    iframeURL: string;
-  };
-}
-
 interface IYoutubeResponse {
   type: string;
   data: {
-    author: IAuthor;
-    content: IMediaContent;
+    content: IMedia;
+    author: any;
+    // author: IAuthor;
   };
 }
 
@@ -72,7 +46,7 @@ const searchYoutubeVideo = async (
     const response: YTQueryResponse = await axios.get(youtubeGetEndpoint);
     return {
       type: "success",
-      message: "Video found.",
+      message: response.message || "Video Found.",
       data: response.data,
     };
   } catch (error: any) {

@@ -14,17 +14,48 @@ import {
 } from "../../../utils/helpers/apiRouteHandler/apiRouteHandler";
 import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
+import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
+
+const mediaContentMock: IMedia = {
+  title: "",
+  description: "",
+  category: "",
+  lengthSeconds: "",
+  videoId: "",
+  videoURL: "",
+  uploadDate: "",
+  keywords: [""],
+  ageRestricted: false,
+  isFamilySafe: false,
+  chapters: [],
+  videoThumbnails: [{ url: "", width: 0, height: 0 }],
+  embed: {
+    iframeURL: "https://www.youtube.com/embed/0La3aBSjvGY",
+  },
+};
 
 const server = setupServer(
   // todo -- refine typing
   rest.get<DefaultRequestBody, YTQueryResponse>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      return res(ctx.json({ type: "success", message: "mock" }));
+      return res(
+        ctx.json({
+          type: "success",
+          message: "mock",
+          data: {
+            type: "found",
+            data: {
+              content: mediaContentMock,
+              author: "TEMP_MOCK_ANY",
+            },
+          },
+        })
+      );
     }
   )
 );
