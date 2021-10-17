@@ -7,7 +7,7 @@ import { RootState } from "../../store";
 // IAlertStatus matches the mui Alert types
 export type IAlertStatus = "success" | "warning" | "error" | "info";
 
-interface IAlertSlice {
+export interface IAlertSlice {
   type: IAlertStatus;
   message: string;
   display: "client-only" | "internal-only" | "support-both";
