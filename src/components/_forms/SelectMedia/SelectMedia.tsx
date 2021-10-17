@@ -91,7 +91,7 @@ const SelectMedia = () => {
         return setShowVideo(false);
       } else {
         setShowVideo(true);
-        dispatch(setMedia(response.data?.data.content as IMedia));
+        dispatch(setMedia(response.data?.data.media as IMedia));
         dispatch(setAuthor(response.data?.data.author as IAuthor));
         dispatch(
           setAlert({

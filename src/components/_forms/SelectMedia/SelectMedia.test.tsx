@@ -21,7 +21,7 @@ const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
 
-const mediaContentMock: IMedia = {
+const mediaMock: IMedia = {
   title: "",
   description: "",
   category: "",
@@ -63,7 +63,7 @@ const server = setupServer(
           data: {
             type: "found",
             data: {
-              content: mediaContentMock,
+              media: mediaMock,
               author: authorMock,
             },
           },

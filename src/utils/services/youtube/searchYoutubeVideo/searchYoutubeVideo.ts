@@ -12,7 +12,7 @@ import { IAuthor } from "../../../../redux/slices/authorSlice/authorSlice";
 interface IYoutubeResponse {
   type: string;
   data: {
-    content: IMedia;
+    media: IMedia;
     author: IAuthor;
   };
 }
@@ -31,8 +31,8 @@ const searchYoutubeVideo = async (
   try {
     const response: YTQueryResponse = await axios.get(youtubeGetEndpoint);
     return {
-      type: "success",
-      message: response.message || "Video Found.",
+      type: response.type,
+      message: response.message || "Video found.",
       data: response.data,
     };
   } catch (error: any) {
