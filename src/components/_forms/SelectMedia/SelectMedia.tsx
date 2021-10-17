@@ -8,11 +8,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
-import { IMedia, setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
-import {
-  IAuthor,
-  setAuthor,
-} from "../../../redux/slices/authorSlice/authorSlice";
+import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
+import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
 
 type IFormInputs = {
   sourceURL: string;
@@ -80,7 +77,7 @@ const SelectMedia = () => {
 
     const response = await searchYoutubeVideo(youtubeId);
     if (mountedRef.current) {
-      if (response.type === "warning" || response.type === "error") {
+      if (response.data === undefined) {
         dispatch(
           setAlert({
             type: response.type,
@@ -91,8 +88,8 @@ const SelectMedia = () => {
         return setShowVideo(false);
       } else {
         setShowVideo(true);
-        dispatch(setMedia(response.data?.data.media as IMedia));
-        dispatch(setAuthor(response.data?.data.author as IAuthor));
+        dispatch(setMedia(response.data.media));
+        dispatch(setAuthor(response.data.author));
         dispatch(
           setAlert({
             type: response.type,
