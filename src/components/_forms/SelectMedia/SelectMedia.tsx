@@ -10,6 +10,7 @@ import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
+import { postMediaToS3 } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
 
 type IFormInputs = {
   sourceURL: string;
@@ -117,13 +118,18 @@ const SelectMedia = () => {
     return filteredLanguages;
   };
 
-  const onSubmit: SubmitHandler<IFormInputs> = () => {
-    setContentSubmitted(true);
+  const onSubmit: SubmitHandler<IFormInputs> = async () => {
+    if (mountedRef.current) {
+      setContentSubmitted(true);
+    }
+    // todo -- remove hardcoded contentId
+    const s3PostResponse = await postMediaToS3("0La3aBSjvGY");
+
     dispatch(
       setAlert({
-        type: "success",
-        message: "Successfully submitted content",
-        display: "client-only",
+        type: s3PostResponse.type,
+        message: s3PostResponse.message,
+        display: "support-both",
       })
     );
   };

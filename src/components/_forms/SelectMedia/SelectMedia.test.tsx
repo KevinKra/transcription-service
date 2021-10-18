@@ -16,6 +16,7 @@ import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVi
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
 import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { authorMock } from "../../../redux/slices/authorSlice/authorSlice";
+import { IPostMediaToS3Res } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
@@ -23,6 +24,7 @@ const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
 const youtubeGetEndpointAlt = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `ABC3aBSjABC`,
 ]);
+const s3PostEndpoint = getApiAddress(ApiEndpointsEnum.s3);
 
 const mediaMock: IMedia = {
   title: "",
@@ -55,6 +57,19 @@ const server = setupServer(
             media: mediaMock,
             author: authorMock,
           },
+        })
+      );
+    }
+  ),
+
+  rest.post<DefaultRequestBody, IPostMediaToS3Res["data"]>(
+    s3PostEndpoint,
+    (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          type: "success",
+          message: "file uploaded.",
         })
       );
     }
@@ -286,6 +301,69 @@ describe("SelectMedia", () => {
         expect(
           await screen.findByRole("button", { name: /building lesson/i })
         ).toBeDisabled();
+      });
+    });
+  });
+
+  describe("when a video is submitted", () => {
+    const submitForm = async () => {
+      user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+      const sourceInput = screen.getByTestId("input-select-source-language");
+      const targetInput = screen.getByTestId("input-select-target-language");
+      fireEvent.change(sourceInput, { target: { value: "en-US" } });
+      fireEvent.change(targetInput, { target: { value: "fr-FR" } });
+      const buildButton = screen.getByRole("button", {
+        name: buttonBuildLesson,
+      });
+
+      // ? When testing, code that causes React "state updates" should be wrapped into act
+      // ? the build button triggers onSubmit(), which updates state.
+      await waitFor(() => {
+        fireEvent.click(buildButton);
+      });
+    };
+
+    describe("if the video successfully uploads", () => {
+      beforeEach(async () => {
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("a success toast message appears", async () => {
+        await waitFor(() => {
+          expect(screen.queryByText(/file uploaded/i)).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("if the video does not successfully upload", () => {
+      beforeEach(async () => {
+        server.use(
+          rest.post<DefaultRequestBody, IPostMediaToS3Res["data"]>(
+            s3PostEndpoint,
+            (req, res, ctx) => {
+              return res(
+                ctx.status(400),
+                ctx.json({
+                  type: "error",
+                  message: "failed to upload file.",
+                })
+              );
+            }
+          )
+        );
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("an error toast message appears", async () => {
+        await waitFor(() => {
+          expect(
+            screen.queryByText(/failed to upload file/i)
+          ).toBeInTheDocument();
+        });
       });
     });
   });
