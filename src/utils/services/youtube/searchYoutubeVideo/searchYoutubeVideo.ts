@@ -34,9 +34,10 @@ const searchYoutubeVideo = async (
       data: response.data.data as IYoutubeResponse,
     };
   } catch (error: any) {
+    // ? error object has a response property on it.
     return {
-      type: error.response.data?.type || "error",
-      message: error.response.data?.message || "Oops, something went wrong.",
+      type: error.response?.data.type || "error",
+      message: error.response?.data.message || "Oops, something went wrong.",
     };
   }
 };
