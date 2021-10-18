@@ -35,8 +35,8 @@ const searchYoutubeVideo = async (
     };
   } catch (error: any) {
     return {
-      type: error.response?.data.type || "error",
-      message: error.response?.data.message || "Something went wrong.",
+      type: error.data?.type || "error",
+      message: error.data?.message || "Oops, something went wrong.",
     };
   }
 };

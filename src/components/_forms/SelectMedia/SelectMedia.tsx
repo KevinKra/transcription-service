@@ -62,7 +62,7 @@ const SelectMedia = () => {
   const onSearch = async () => {
     const values = getValues();
     const youtubeId = youtubeGetId(values.sourceURL);
-
+    console.log("ytID", youtubeId);
     if (youtubeId.length !== 11) {
       setShowVideo(false);
       dispatch(
