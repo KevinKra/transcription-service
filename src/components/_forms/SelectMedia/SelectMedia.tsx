@@ -10,8 +10,7 @@ import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
-import { postMediaToS3 } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
-import { searchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
+import { handleS3Upload, optionsMapper } from "./utils";
 
 type IFormInputs = {
   sourceURL: string;
@@ -102,51 +101,13 @@ const SelectMedia = () => {
     }
   };
 
-  const optionsMapper = (languageCode?: string) => {
-    // todo -- write tests for this util
-    type languageSelection = { name: string; code: string };
-
-    const supportedLanguages: languageSelection[] = [
-      { name: "english", code: "en-US" },
-      { name: "french", code: "fr-FR" },
-      { name: "spanish", code: "es-ES" },
-      { name: "german", code: "de-DE" },
-    ];
-    if (!languageCode) return supportedLanguages;
-    const filteredLanguages = supportedLanguages.filter((language) => {
-      return language.code.toLowerCase() !== languageCode.toLowerCase();
-    });
-    return filteredLanguages;
-  };
-
   const onSubmit: SubmitHandler<IFormInputs> = async () => {
     if (mountedRef.current) {
       setContentSubmitted(true);
     }
 
     // todo -- remove hardcoded contentId
-    const s3SearchResponse = await searchForMediaS3("0La3aBSjvGY");
-    if (s3SearchResponse.type === "success") {
-      // * file is found, don't upload new file.
-      dispatch(
-        setAlert({
-          type: s3SearchResponse.type,
-          message: s3SearchResponse.message,
-          display: "client-only",
-        })
-      );
-    } else {
-      // todo -- remove hardcoded contentId
-      const s3PostResponse = await postMediaToS3("0La3aBSjvGY");
-
-      dispatch(
-        setAlert({
-          type: s3PostResponse.type,
-          message: s3PostResponse.message,
-          display: "support-both",
-        })
-      );
-    }
+    await handleS3Upload("0La3aBSjvGY", dispatch);
   };
 
   return (
