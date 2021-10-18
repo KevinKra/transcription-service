@@ -40,11 +40,13 @@ describe("SearchYoutubeVideo()", () => {
   describe("failure response", () => {
     beforeEach(() => {
       mockedAxiosGet.mockRejectedValue({
-        data: {
-          type: "error",
-          message: "video has not been found",
-        },
-      } as YTQueryResponse);
+        response: {
+          data: {
+            type: "error",
+            message: "video has not been found",
+          },
+        } as YTQueryResponse,
+      });
     });
 
     test("handles failure", async () => {

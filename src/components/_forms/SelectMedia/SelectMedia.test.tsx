@@ -216,10 +216,11 @@ describe("SelectMedia", () => {
         ).toBeDisabled();
       });
 
-      test("a warning toast message appears", () => {
-        // screen.debug(undefined, Infinity);
-        // const warningSnackbar = screen.getByText(/invalid address provided/i);
-        // expect(warningSnackbar).toBeInTheDocument();
+      test("a warning toast message appears", async () => {
+        await waitFor(() => {
+          const warningSnackbar = screen.getByText(/video not found/i);
+          expect(warningSnackbar).toBeInTheDocument();
+        });
       });
     });
   });
