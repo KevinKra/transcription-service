@@ -11,6 +11,7 @@ import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVid
 import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
 import { postMediaToS3 } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
+import { searchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
 
 type IFormInputs = {
   sourceURL: string;
@@ -122,16 +123,30 @@ const SelectMedia = () => {
     if (mountedRef.current) {
       setContentSubmitted(true);
     }
-    // todo -- remove hardcoded contentId
-    const s3PostResponse = await postMediaToS3("0La3aBSjvGY");
 
-    dispatch(
-      setAlert({
-        type: s3PostResponse.type,
-        message: s3PostResponse.message,
-        display: "support-both",
-      })
-    );
+    // todo -- remove hardcoded contentId
+    const s3SearchResponse = await searchForMediaS3("0La3aBSjvGY");
+    if (s3SearchResponse.type === "success") {
+      // * file is found, don't upload new file.
+      dispatch(
+        setAlert({
+          type: s3SearchResponse.type,
+          message: s3SearchResponse.message,
+          display: "client-only",
+        })
+      );
+    } else {
+      // todo -- remove hardcoded contentId
+      const s3PostResponse = await postMediaToS3("0La3aBSjvGY");
+
+      dispatch(
+        setAlert({
+          type: s3PostResponse.type,
+          message: s3PostResponse.message,
+          display: "support-both",
+        })
+      );
+    }
   };
 
   return (

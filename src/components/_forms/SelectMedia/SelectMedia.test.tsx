@@ -17,6 +17,7 @@ import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
 import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { authorMock } from "../../../redux/slices/authorSlice/authorSlice";
 import { IPostMediaToS3Res } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
+import { ISearchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
@@ -25,6 +26,10 @@ const youtubeGetEndpointAlt = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `ABC3aBSjABC`,
 ]);
 const s3PostEndpoint = getApiAddress(ApiEndpointsEnum.s3);
+const s3SearchEndpoint = getApiAddress(ApiEndpointsEnum.s3BucketsIdFilesId, [
+  "parakeet-content-bucket-test",
+  `0La3aBSjvGY`,
+]);
 
 const mediaMock: IMedia = {
   title: "",
@@ -44,8 +49,8 @@ const mediaMock: IMedia = {
   },
 };
 
+// ? these are all happy paths
 const server = setupServer(
-  // todo -- refine typing
   rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
@@ -70,6 +75,21 @@ const server = setupServer(
         ctx.json({
           type: "success",
           message: "file uploaded.",
+        })
+      );
+    }
+  ),
+
+  // * set root endpoint to failure to it doesn't conflict
+  // * with tests uploading "new" files
+  rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
+    s3SearchEndpoint,
+    (req, res, ctx) => {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          type: "error",
+          message: "file not found.",
         })
       );
     }
@@ -333,6 +353,36 @@ describe("SelectMedia", () => {
       test("a success toast message appears", async () => {
         await waitFor(() => {
           expect(screen.queryByText(/file uploaded/i)).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("if the video already exists remotely", () => {
+      beforeEach(async () => {
+        server.use(
+          rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
+            s3SearchEndpoint,
+            (req, res, ctx) => {
+              return res(
+                ctx.status(200),
+                ctx.json({
+                  type: "success",
+                  message: "File already exists.",
+                })
+              );
+            }
+          )
+        );
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("a success toast message appears", async () => {
+        await waitFor(() => {
+          expect(
+            screen.queryByText(/file already exists/i)
+          ).toBeInTheDocument();
         });
       });
     });
