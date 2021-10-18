@@ -1,12 +1,15 @@
 import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 import { AppDispatch } from "../../../../redux/store";
-import { postMediaToS3 } from "../../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
+import {
+  postMediaToS3,
+  s3Response,
+} from "../../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
 import { searchForMediaS3 } from "../../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
 
 export const handleS3Upload = async (
   contentId: string,
   dispatch: AppDispatch
-) => {
+): Promise<s3Response | void> => {
   const s3SearchResponse = await searchForMediaS3(contentId);
   if (s3SearchResponse.type === "success") {
     // * file is found, don't upload new file.
@@ -17,6 +20,7 @@ export const handleS3Upload = async (
         display: "client-only",
       })
     );
+    return s3SearchResponse.data as s3Response;
   } else {
     const s3PostResponse = await postMediaToS3(contentId);
 
@@ -27,6 +31,9 @@ export const handleS3Upload = async (
         display: "support-both",
       })
     );
+    if (s3PostResponse.type === "success") {
+      return s3PostResponse.data as s3Response;
+    }
   }
 };
 

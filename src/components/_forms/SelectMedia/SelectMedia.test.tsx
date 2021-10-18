@@ -75,6 +75,10 @@ const server = setupServer(
         ctx.json({
           type: "success",
           message: "file uploaded.",
+          data: {
+            mediaFormat: "mp4-mock",
+            bucketURI: "s3/mock",
+          },
         })
       );
     }

@@ -6,13 +6,11 @@ import {
   ApiEndpointsEnum,
 } from "../../../../helpers/apiRouteHandler/apiRouteHandler";
 import { IAxiosResponse } from "../../../../types";
+import { s3Response } from "../postMediaToS3/postMediaToS3";
 
 export interface ISearchForMediaS3 extends IAxiosResponse {
   data: IAxiosResponse["data"] & {
-    data?: {
-      mediaFormat: string;
-      bucketURI: string;
-    };
+    data?: s3Response;
   };
 }
 

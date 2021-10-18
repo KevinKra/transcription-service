@@ -7,9 +7,11 @@ import {
 } from "../../../../helpers/apiRouteHandler/apiRouteHandler";
 import { IAxiosResponse } from "../../../../types";
 
+export type s3Response = { mediaFormat: string; bucketURI: string };
+
 export interface IPostMediaToS3Res extends IAxiosResponse {
   data: IAxiosResponse["data"] & {
-    data?: { mediaFormat: string; bucketURI: string };
+    data?: s3Response;
   };
 }
 

@@ -107,7 +107,8 @@ const SelectMedia = () => {
     }
 
     // todo -- remove hardcoded contentId
-    await handleS3Upload("0La3aBSjvGY", dispatch);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const s3FileData = await handleS3Upload("0La3aBSjvGY", dispatch);
   };
 
   return (
