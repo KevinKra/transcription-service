@@ -10,6 +10,7 @@ import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
+import { handleS3Upload, optionsMapper } from "./utils";
 
 type IFormInputs = {
   sourceURL: string;
@@ -100,32 +101,14 @@ const SelectMedia = () => {
     }
   };
 
-  const optionsMapper = (languageCode?: string) => {
-    // todo -- write tests for this util
-    type languageSelection = { name: string; code: string };
+  const onSubmit: SubmitHandler<IFormInputs> = async () => {
+    if (mountedRef.current) {
+      setContentSubmitted(true);
+    }
 
-    const supportedLanguages: languageSelection[] = [
-      { name: "english", code: "en-US" },
-      { name: "french", code: "fr-FR" },
-      { name: "spanish", code: "es-ES" },
-      { name: "german", code: "de-DE" },
-    ];
-    if (!languageCode) return supportedLanguages;
-    const filteredLanguages = supportedLanguages.filter((language) => {
-      return language.code.toLowerCase() !== languageCode.toLowerCase();
-    });
-    return filteredLanguages;
-  };
-
-  const onSubmit: SubmitHandler<IFormInputs> = () => {
-    setContentSubmitted(true);
-    dispatch(
-      setAlert({
-        type: "success",
-        message: "Successfully submitted content",
-        display: "client-only",
-      })
-    );
+    // todo -- remove hardcoded contentId
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const s3FileData = await handleS3Upload("0La3aBSjvGY", dispatch);
   };
 
   return (

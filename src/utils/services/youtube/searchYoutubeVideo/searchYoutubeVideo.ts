@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   getApiAddress,
   ApiEndpointsEnum,
@@ -8,6 +6,7 @@ import { IAxiosResponse } from "../../../types";
 import axios from "axios";
 import { IMedia } from "../../../../redux/slices/mediaSlice/mediaSlice";
 import { IAuthor } from "../../../../redux/slices/authorSlice/authorSlice";
+import { axiosErrorHandler } from "../../../helpers/axiosErrorHandler/axiosErrorHandler";
 
 interface IYoutubeResponse {
   media: IMedia;
@@ -33,12 +32,8 @@ const searchYoutubeVideo = async (
       message: response.data.message,
       data: response.data.data as IYoutubeResponse,
     };
-  } catch (error: any) {
-    // ? error object has a response property on it.
-    return {
-      type: error.response?.data.type || "error",
-      message: error.response?.data.message || "Oops, something went wrong.",
-    };
+  } catch (error) {
+    return axiosErrorHandler(error);
   }
 };
 
