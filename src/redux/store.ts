@@ -3,10 +3,14 @@
 // ? https://www.emgoto.com/redux-toolkit/
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import alertSliceReducer from "./slices/alertSlice/alertSlice";
+import mediaSliceReducer from "./slices/mediaSlice/mediaSlice";
+import authorSliceReducer from "./slices/authorSlice/authorSlice";
 
 export const store = configureStore({
   reducer: {
     alert: alertSliceReducer,
+    media: mediaSliceReducer,
+    author: authorSliceReducer,
   },
 });
 

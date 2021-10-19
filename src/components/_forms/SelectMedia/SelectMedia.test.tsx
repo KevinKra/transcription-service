@@ -14,17 +14,88 @@ import {
 } from "../../../utils/helpers/apiRouteHandler/apiRouteHandler";
 import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
+import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
+import { authorMock } from "../../../redux/slices/authorSlice/authorSlice";
+import { IPostMediaToS3Res } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
+import { ISearchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
+const youtubeGetEndpointAlt = getApiAddress(ApiEndpointsEnum.youtubeId, [
+  `ABC3aBSjABC`,
+]);
+const s3PostEndpoint = getApiAddress(ApiEndpointsEnum.s3);
+const s3SearchEndpoint = getApiAddress(ApiEndpointsEnum.s3BucketsIdFilesId, [
+  "parakeet-content-bucket-test",
+  `0La3aBSjvGY`,
+]);
 
+const mediaMock: IMedia = {
+  title: "",
+  description: "",
+  category: "",
+  lengthSeconds: "",
+  videoId: "",
+  videoURL: "",
+  uploadDate: "",
+  keywords: [""],
+  ageRestricted: false,
+  isFamilySafe: false,
+  chapters: [],
+  videoThumbnails: [{ url: "", width: 0, height: 0 }],
+  embed: {
+    iframeURL: "https://www.youtube.com/embed/0La3aBSjvGY",
+  },
+};
+
+// ? these are all happy paths
 const server = setupServer(
-  // todo -- refine typing
-  rest.get<DefaultRequestBody, YTQueryResponse>(
+  rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
     youtubeGetEndpoint,
     (req, res, ctx) => {
-      return res(ctx.json({ type: "success", message: "mock" }));
+      return res(
+        ctx.json({
+          type: "success",
+          message: "video found",
+          data: {
+            media: mediaMock,
+            author: authorMock,
+          },
+        })
+      );
+    }
+  ),
+
+  rest.post<DefaultRequestBody, IPostMediaToS3Res["data"]>(
+    s3PostEndpoint,
+    (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          type: "success",
+          message: "file uploaded.",
+          data: {
+            mediaFormat: "mp4-mock",
+            bucketURI: "s3/mock",
+          },
+        })
+      );
+    }
+  ),
+
+  // * set root endpoint to failure to it doesn't conflict
+  // * with tests uploading "new" files
+  rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
+    s3SearchEndpoint,
+    (req, res, ctx) => {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          type: "error",
+          message: "file not found.",
+        })
+      );
     }
   )
 );
@@ -102,9 +173,11 @@ describe("SelectMedia", () => {
         ).toBeDisabled();
       });
 
-      test("a success toast message appears", () => {
-        const successToast = screen.getByText(/video found/i);
-        expect(successToast).toBeInTheDocument();
+      test("a success toast message appears", async () => {
+        await waitFor(() => {
+          const successToast = screen.getByText(/video found/i);
+          expect(successToast).toBeInTheDocument();
+        });
       });
     });
 
@@ -114,7 +187,7 @@ describe("SelectMedia", () => {
         render(<StyledSnackBar />);
         user.type(
           screen.getByTestId(inputMediaUrl),
-          "https://www.youtube.com/watch?v=invalid"
+          "https://www.youtube.com/watch?v=banana"
         );
         user.click(screen.getByRole("button", { name: /search/i }));
       });
@@ -127,6 +200,7 @@ describe("SelectMedia", () => {
 
       test("all inputs, except the media source input, remain disabled", () => {
         expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
+        expect(screen.getByTestId(inputMediaUrl)).toBeEnabled();
         expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
         expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
         expect(
@@ -143,14 +217,14 @@ describe("SelectMedia", () => {
     describe("if the media address input is valid, but the video is not found", () => {
       beforeEach(() => {
         server.use(
-          rest.get<DefaultRequestBody, YTQueryResponse>(
-            youtubeGetEndpoint,
+          rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
+            youtubeGetEndpointAlt,
             (req, res, ctx) => {
               return res(
-                ctx.status(404),
+                ctx.status(400),
                 ctx.json({
                   type: "warning",
-                  message: "Video not found",
+                  message: "video not found",
                 })
               );
             }
@@ -158,7 +232,10 @@ describe("SelectMedia", () => {
         );
         render(<SelectMedia />);
         render(<StyledSnackBar />);
-        user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+        user.type(
+          screen.getByTestId(inputMediaUrl),
+          "https://www.youtube.com/watch?v=ABC3aBSjABC"
+        );
         user.click(screen.getByRole("button", { name: /search/i }));
       });
 
@@ -168,28 +245,46 @@ describe("SelectMedia", () => {
         ).toBeInTheDocument();
       });
 
-      test("a warning snackbar appears", async () => {
-        const warningSnackbar = await screen.findByText(/video not found/i);
-        expect(warningSnackbar).toBeInTheDocument();
+      test("all inputs, except the media source input, remain disabled", () => {
+        expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
+        expect(screen.getByTestId(inputMediaUrl)).toBeEnabled();
+        expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
+        expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          screen.getByRole("button", { name: buttonBuildLesson })
+        ).toBeDisabled();
       });
 
-      test.todo("all the fields become enabled");
-      test.todo("the previous values are still present");
+      test("a warning toast message appears", async () => {
+        await waitFor(() => {
+          const warningSnackbar = screen.getByText(/video not found/i);
+          expect(warningSnackbar).toBeInTheDocument();
+        });
+      });
     });
   });
 
-  describe("when the user selects a source language", () => {
-    // beforeEach(() => {
-    //   render(<SelectMedia />);
-    //   user.type(
-    //     screen.getByTestId(inputMediaUrl),
-    //     "https://www.youtube.com/watch?v=0La3aBSjvGY"
-    //   );
-    //   user.click(screen.getByRole("button", { name: /search/i }));
-    // });
-    test.todo(
-      "the selected source language does NOT also appear as a target language option"
-    );
+  describe("when a user selects an option from a language select input", () => {
+    beforeEach(() => {
+      render(<SelectMedia />);
+      user.type(
+        screen.getByTestId(inputMediaUrl),
+        "https://www.youtube.com/watch?v=0La3aBSjvGY"
+      );
+      user.click(screen.getByRole("button", { name: /search/i }));
+    });
+
+    test("the sibling language select input does not have the same option available", async () => {
+      await waitFor(() =>
+        expect(screen.getByTestId(inputSelectSource)).toBeEnabled()
+      );
+      const sourceInput = screen.getByTestId("input-select-source-language");
+      const targetInput = screen.getByTestId("input-select-target-language");
+      fireEvent.change(sourceInput, { target: { value: "en-US" } });
+      fireEvent.change(targetInput, { target: { value: "en-US" } });
+      // ? getByText() fails if MULTIPLE matches are found. So, if it finds one, success.
+      expect(screen.getByText(/english/i)).toBeInTheDocument();
+    });
   });
 
   describe("when all inputs have values", () => {
@@ -198,9 +293,9 @@ describe("SelectMedia", () => {
       render(<StyledSnackBar />);
       user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
       const sourceInput = screen.getByTestId("input-select-source-language");
-      fireEvent.change(sourceInput, { target: { value: "en-US" } });
       const targetInput = screen.getByTestId("input-select-target-language");
-      fireEvent.change(targetInput, { target: { value: "fr" } });
+      fireEvent.change(sourceInput, { target: { value: "en-US" } });
+      fireEvent.change(targetInput, { target: { value: "fr-FR" } });
       // todo -- cheating the UX flow in this example, is that okay?
     });
 
@@ -219,14 +314,110 @@ describe("SelectMedia", () => {
         expect(await screen.findByText(/building lesson/i)).toBeInTheDocument();
       });
 
-      test.todo("all inputs become disabled");
-
-      describe("it's able to handle a successful call", () => {
-        test.todo("a success notification appears");
+      test("all inputs become disabled", async () => {
+        const buildButton = screen.getByRole("button", {
+          name: buttonBuildLesson,
+        });
+        user.click(buildButton);
+        expect(await screen.findByTestId(inputMediaUrl)).toBeDisabled();
+        expect(await screen.findByTestId(inputSelectSource)).toBeDisabled();
+        expect(await screen.findByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          await screen.findByRole("button", { name: /building lesson/i })
+        ).toBeDisabled();
       });
-      describe("it's able to handle a failing call", () => {
-        test.todo("a failure notification appears");
-        test.todo("all inputs become enabled");
+    });
+  });
+
+  describe("when a video is submitted", () => {
+    const submitForm = async () => {
+      user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+      const sourceInput = screen.getByTestId("input-select-source-language");
+      const targetInput = screen.getByTestId("input-select-target-language");
+      fireEvent.change(sourceInput, { target: { value: "en-US" } });
+      fireEvent.change(targetInput, { target: { value: "fr-FR" } });
+      const buildButton = screen.getByRole("button", {
+        name: buttonBuildLesson,
+      });
+
+      // ? When testing, code that causes React "state updates" should be wrapped into act
+      // ? the build button triggers onSubmit(), which updates state.
+      await waitFor(() => {
+        fireEvent.click(buildButton);
+      });
+    };
+
+    describe("if the video successfully uploads", () => {
+      beforeEach(async () => {
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("a success toast message appears", async () => {
+        await waitFor(() => {
+          expect(screen.queryByText(/file uploaded/i)).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("if the video already exists remotely", () => {
+      beforeEach(async () => {
+        server.use(
+          rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
+            s3SearchEndpoint,
+            (req, res, ctx) => {
+              return res(
+                ctx.status(200),
+                ctx.json({
+                  type: "success",
+                  message: "File already exists.",
+                })
+              );
+            }
+          )
+        );
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("a success toast message appears", async () => {
+        await waitFor(() => {
+          expect(
+            screen.queryByText(/file already exists/i)
+          ).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("if the video does not successfully upload", () => {
+      beforeEach(async () => {
+        server.use(
+          rest.post<DefaultRequestBody, IPostMediaToS3Res["data"]>(
+            s3PostEndpoint,
+            (req, res, ctx) => {
+              return res(
+                ctx.status(400),
+                ctx.json({
+                  type: "error",
+                  message: "failed to upload file.",
+                })
+              );
+            }
+          )
+        );
+        render(<SelectMedia />);
+        render(<StyledSnackBar />);
+        await submitForm();
+      });
+
+      test("an error toast message appears", async () => {
+        await waitFor(() => {
+          expect(
+            screen.queryByText(/failed to upload file/i)
+          ).toBeInTheDocument();
+        });
       });
     });
   });

@@ -1,5 +1,4 @@
 import { styled } from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 
 export interface IThemeSwitch {
@@ -22,16 +21,12 @@ export const ThemeSwitch = ({
   };
 
   return (
-    <FormControlLabel
-      control={
-        <MaterialUISwitch
-          data-testid={darkModeActive ? "theme-night-mode" : "theme-day-mode"}
-          checked={darkModeActive}
-          onClick={toggleMode}
-          sx={{ m: 1 }}
-        />
-      }
-      label="Switch"
+    <MaterialUISwitch
+      data-testid="night-day-switch"
+      // data-testid={darkModeActive ? "theme-night-mode" : "theme-day-mode"}
+      checked={darkModeActive}
+      onClick={toggleMode}
+      sx={{ m: 1 }}
     />
   );
 };

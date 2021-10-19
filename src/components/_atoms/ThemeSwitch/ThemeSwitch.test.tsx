@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ThemeSwitch } from "./ThemeSwitch";
 // import user from "@testing-library/user-event";
 
@@ -19,23 +20,14 @@ describe("ThemeSwitch", () => {
       );
     });
 
-    test.skip("the user clicks the switch, it sets to day mode", () => {
-      // const switchElement = screen.getByLabelText(/switch/i);
-      // user.click(switchElement);
-      // fireEvent.change(switchElement, { target: { checked: true } });
-      // expect(screen.getByRole("checkbox")).toHaveProperty("checked", true);
-      // screen.debug();
-      // expect(screen.getByTestId("theme-day-mode")).toBeInTheDocument();
-      // fireEvent.change(switchElement, { target: { checked: false } });
-      // expect(screen.getByTestId("theme-day-mode")).toBeInTheDocument();
+    test("the switch appears on the page", () => {
+      const switchElement = screen.getByTestId(/night-day-switch/i);
+      expect(switchElement).toBeInTheDocument();
     });
 
-    test.skip("the user clicks the switch again, it sets to night mode", () => {
-      // fireEvent.change(screen.getByRole("checkbox"), {
-      //   target: { checked: true },
-      // });
-      // expect(screen.getByRole("checkbox")).toHaveProperty("checked", true);
-      // expect(screen.getByTestId("theme-night-mode")).toBeInTheDocument();
+    test.skip("the user clicks the switch, it sets to day mode", () => {
+      const switchElement = screen.getByTestId(/night-day-switch/i);
+      userEvent.click(switchElement);
     });
   });
 });

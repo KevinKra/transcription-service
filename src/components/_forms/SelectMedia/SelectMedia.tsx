@@ -1,4 +1,4 @@
-import { TextField, styled, MenuItem, Typography } from "@mui/material";
+import { TextField, styled, MenuItem, Typography, Paper } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../../redux/hooks";
@@ -8,6 +8,9 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
+import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
+import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
+import { handleS3Upload, optionsMapper } from "./utils";
 
 type IFormInputs = {
   sourceURL: string;
@@ -19,6 +22,8 @@ const SelectMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [contentSubmitted, setContentSubmitted] = useState(false);
+  const [sourceLanguage, setSourceLanguage] = useState<string>();
+  const [targetLanguage, setTargetLanguage] = useState<string>();
 
   const {
     control,
@@ -31,7 +36,6 @@ const SelectMedia = () => {
   const mountedRef = useRef(false);
   // effect is just for tracking mounted state for react-testing-library
   // todo -- determine if using refs is a good idea
-  // todo -- since it _only_ is being used to resolving a testing
   // todo -- "memory leak" error in react-testing-library
   // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
   useEffect(() => {
@@ -45,6 +49,9 @@ const SelectMedia = () => {
 
   useEffect(() => {
     const subscription = watch((allFields) => {
+      const { sourceLanguage, targetLanguage } = allFields;
+      setSourceLanguage(sourceLanguage);
+      setTargetLanguage(targetLanguage);
       const fieldValues = Object.values(allFields);
       const allFieldsHaveInputs = fieldValues.every((field) => field !== "");
       allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
@@ -56,7 +63,6 @@ const SelectMedia = () => {
   const onSearch = async () => {
     const values = getValues();
     const youtubeId = youtubeGetId(values.sourceURL);
-
     if (youtubeId.length !== 11) {
       setShowVideo(false);
       dispatch(
@@ -71,7 +77,7 @@ const SelectMedia = () => {
 
     const response = await searchYoutubeVideo(youtubeId);
     if (mountedRef.current) {
-      if (response.type === "warning" || response.type === "error") {
+      if (response.data === undefined) {
         dispatch(
           setAlert({
             type: response.type,
@@ -82,6 +88,8 @@ const SelectMedia = () => {
         return setShowVideo(false);
       } else {
         setShowVideo(true);
+        dispatch(setMedia(response.data.media));
+        dispatch(setAuthor(response.data.author));
         dispatch(
           setAlert({
             type: response.type,
@@ -93,27 +101,26 @@ const SelectMedia = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<IFormInputs> = () => {
-    setContentSubmitted(true);
-    dispatch(
-      setAlert({
-        type: "success",
-        message: "Successfully submitted content",
-        display: "client-only",
-      })
-    );
+  const onSubmit: SubmitHandler<IFormInputs> = async () => {
+    if (mountedRef.current) {
+      setContentSubmitted(true);
+    }
+
+    // todo -- remove hardcoded contentId
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const s3FileData = await handleS3Upload("0La3aBSjvGY", dispatch);
   };
 
   return (
-    <SelectMediaWrapper>
-      <div>
+    <SelectMediaWrapper elevation={5}>
+      <section>
         <VideoPlayerController
           playable={showVideo}
           withDetails={false}
-          embedURL=""
+          embedURL="https://www.youtube.com/watch?v=0La3aBSjvGY"
           timeStamp={{ startTime: 0, endTime: 10 }}
         />
-      </div>
+      </section>
       <button onClick={onSearch}>Search</button>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControlInputs>
@@ -130,7 +137,7 @@ const SelectMedia = () => {
                   "data-testid": "input-source-url",
                 }}
                 variant="filled"
-                disabled={false}
+                disabled={contentSubmitted || false}
                 placeholder="https://www.youtube.com/watch?v=0La3aBSjvGY"
                 error={!!errors.sourceURL}
                 helperText={
@@ -143,7 +150,7 @@ const SelectMedia = () => {
             )}
           />
 
-          <SelectInputWrapper>
+          <SelectInputsWrapper>
             <Typography variant="overline">Language Mapping</Typography>
             <SelectWrapper>
               <Controller
@@ -155,10 +162,11 @@ const SelectMedia = () => {
                   <TextField
                     select
                     fullWidth
+                    name="source-language"
                     label="Source Language"
-                    variant="filled"
+                    variant="outlined"
                     value={value}
-                    disabled={showVideo ? false : true}
+                    disabled={contentSubmitted || !showVideo}
                     error={!!errors.sourceLanguage}
                     onChange={onChange}
                     inputProps={{
@@ -170,18 +178,17 @@ const SelectMedia = () => {
                         : "Select the language used in the provided media"
                     }
                   >
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="en-US">English</MenuItem>
-                    <MenuItem value="fr-FR">French</MenuItem>
-                    <MenuItem value="es-ES">Spanish</MenuItem>
-                    <MenuItem value="de-DE">German</MenuItem>
+                    {optionsMapper(targetLanguage).map(({ code, name }, i) => {
+                      return (
+                        <MenuItem key={i} value={code}>
+                          {name}
+                        </MenuItem>
+                      );
+                    })}
                   </TextField>
                 )}
               />
             </SelectWrapper>
-          </SelectInputWrapper>
-          <SelectInputWrapper>
-            <Typography variant="overline">Language Mapping</Typography>
             <SelectWrapper>
               <Controller
                 name="targetLanguage"
@@ -192,10 +199,11 @@ const SelectMedia = () => {
                   <TextField
                     select
                     fullWidth
+                    name="target-language"
                     label="Target Language"
-                    variant="filled"
+                    variant="outlined"
                     value={value}
-                    disabled={showVideo ? false : true}
+                    disabled={contentSubmitted || !showVideo}
                     error={!!errors.targetLanguage}
                     onChange={onChange}
                     inputProps={{
@@ -207,16 +215,18 @@ const SelectMedia = () => {
                         : "Select a language to translate the content into"
                     }
                   >
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="fr">French</MenuItem>
-                    <MenuItem value="es">Spanish</MenuItem>
-                    <MenuItem value="de">German</MenuItem>
+                    {optionsMapper(sourceLanguage).map(({ code, name }, i) => {
+                      return (
+                        <MenuItem key={i} value={code}>
+                          {name}
+                        </MenuItem>
+                      );
+                    })}
                   </TextField>
                 )}
               />
             </SelectWrapper>
-          </SelectInputWrapper>
+          </SelectInputsWrapper>
           <LoadingButton
             endIcon={<SendIcon />}
             loading={contentSubmitted}
@@ -235,19 +245,20 @@ const SelectMedia = () => {
 
 export default SelectMedia;
 
-const SelectMediaWrapper = styled("section")`
-  border: 1px solid blue;
+const SelectMediaWrapper = styled(Paper)`
   width: 450px;
-`;
-
-const FormControlInputs = styled("div")`
-  border: 1px solid red;
+  padding: 1rem;
 `;
 
 const SelectWrapper = styled("div")`
-  border: 1px solid red;
+  margin-bottom: 1rem;
 `;
 
-const SelectInputWrapper = styled("div")`
-  border: 1px solid blue;
+const FormControlInputs = styled("div")`
+  margin-top: 1rem;
+`;
+
+const SelectInputsWrapper = styled("div")`
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
 `;

@@ -4,21 +4,33 @@ import { useState } from "react";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 
-type IVideoPlayerView = Partial<IVideoPlayerController>;
+type IVideoPlayerView = IVideoPlayerController;
 
 const VideoPlayerView = ({
   playable = false,
   withDetails,
-}: // embedURL,
-// timeStamp,
-IVideoPlayerView) => {
+  timeStamp,
+  embedURL,
+}: IVideoPlayerView) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useAppDispatch();
+
+  // todo -- test the withDetails playable behaviors
 
   return playable ? (
     <VideoPlayerWrapper>
       <ActivePlayer data-testid="video-player-enabled">
-        <p>Active</p>
+        <iframe
+          width="100%"
+          height="100%"
+          src={`${embedURL}?autoplay=1&start=${timeStamp.startTime + 1 || 0}${
+            timeStamp.endTime && `&end=${timeStamp.endTime}`
+          }`}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="Embedded youtube"
+        />
       </ActivePlayer>
       {withDetails && (
         <DetailsSection>
@@ -44,7 +56,7 @@ IVideoPlayerView) => {
           dispatch(
             setAlert({
               type: "warning",
-              message: "No media selected",
+              message: "No media has been provided to the video player.",
               display: "client-only",
             })
           )
@@ -52,7 +64,7 @@ IVideoPlayerView) => {
       >
         <p>Inactive</p>
       </DisabledPlayer>
-      <Button disabled>Show Details</Button>
+      {withDetails && <Button disabled>Show Details</Button>}
     </VideoPlayerWrapper>
   );
 };
@@ -60,17 +72,15 @@ IVideoPlayerView) => {
 export default VideoPlayerView;
 
 const VideoPlayerWrapper = styled("div")`
-  border: 1px solid red;
-  width: 450px;
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 const Player = styled("div")`
   display: grid;
   place-items: center;
-  border: 1px solid blue;
-  height: 300px;
-  width: 450px;
+  height: 275px;
 `;
+
 const ActivePlayer = styled(Player)``;
 const DisabledPlayer = styled(Player)``;
 
