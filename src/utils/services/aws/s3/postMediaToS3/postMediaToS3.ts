@@ -5,6 +5,7 @@ import {
   getApiAddress,
   ApiEndpointsEnum,
 } from "../../../../helpers/apiRouteHandler/apiRouteHandler";
+import { axiosErrorHandler } from "../../../../helpers/axiosErrorHandler/axiosErrorHandler";
 import { IAxiosResponse } from "../../../../types";
 
 export type s3Response = { mediaFormat: string; bucketURI: string };
@@ -30,10 +31,6 @@ export const postMediaToS3 = async (
       data: response.data.data,
     };
   } catch (error: any) {
-    // todo -- create error handling util if we decide to use this pattern
-    return {
-      type: error.response?.data.type || "error",
-      message: error.response?.data.message || "Oops, something went wrong.",
-    };
+    return axiosErrorHandler(error);
   }
 };

@@ -5,6 +5,7 @@ import {
   getApiAddress,
   ApiEndpointsEnum,
 } from "../../../../helpers/apiRouteHandler/apiRouteHandler";
+import { axiosErrorHandler } from "../../../../helpers/axiosErrorHandler/axiosErrorHandler";
 import { IAxiosResponse } from "../../../../types";
 import { s3Response } from "../postMediaToS3/postMediaToS3";
 
@@ -30,10 +31,6 @@ export const searchForMediaS3 = async (
       data: response.data.data,
     };
   } catch (error: any) {
-    return {
-      // todo -- set to DRY function
-      type: error.response?.data.type || "error",
-      message: error.response?.data.message || "Oops, something went wrong.",
-    };
+    return axiosErrorHandler(error);
   }
 };
