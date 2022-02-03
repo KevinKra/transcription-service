@@ -76,8 +76,10 @@ const SelectMedia = () => {
     }
 
     const response = await searchYoutubeVideo(youtubeId);
+
+    console.log("res", response);
     if (mountedRef.current) {
-      if (response.data === undefined) {
+      if (response.type === "error" || response.data === undefined) {
         dispatch(
           setAlert({
             type: response.type,
@@ -88,7 +90,7 @@ const SelectMedia = () => {
         return setShowVideo(false);
       } else {
         setShowVideo(true);
-        dispatch(setMedia(response.data.media));
+        dispatch(setMedia(response.data.content));
         dispatch(setAuthor(response.data.author));
         dispatch(
           setAlert({

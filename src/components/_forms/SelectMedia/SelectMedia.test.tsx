@@ -59,7 +59,7 @@ const server = setupServer(
           type: "success",
           message: "video found",
           data: {
-            media: mediaMock,
+            content: mediaMock,
             author: authorMock,
           },
         })

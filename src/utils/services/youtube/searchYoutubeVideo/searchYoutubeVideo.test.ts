@@ -17,7 +17,7 @@ describe("SearchYoutubeVideo()", () => {
           type: "success",
           message: "video has been found",
           data: {
-            media: mediaMock,
+            content: mediaMock,
             author: authorMock,
           },
         },
@@ -30,7 +30,7 @@ describe("SearchYoutubeVideo()", () => {
         type: "success",
         message: "video has been found",
         data: {
-          media: mediaMock,
+          content: mediaMock,
           author: authorMock,
         },
       });

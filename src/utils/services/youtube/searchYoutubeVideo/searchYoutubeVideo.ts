@@ -9,8 +9,8 @@ import { IAuthor } from "../../../../redux/slices/authorSlice/authorSlice";
 import { axiosErrorHandler } from "../../../helpers/axiosErrorHandler/axiosErrorHandler";
 
 interface IYoutubeResponse {
-  media: IMedia;
   author: IAuthor;
+  content: IMedia;
 }
 
 export interface YTQueryResponse extends IAxiosResponse {
