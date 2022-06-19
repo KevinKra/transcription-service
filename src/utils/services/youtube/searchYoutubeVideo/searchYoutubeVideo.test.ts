@@ -1,7 +1,7 @@
 import axios from "axios";
 import { mocked } from "ts-jest/utils";
 import { authorMock } from "../../../../redux/slices/authorSlice/authorSlice";
-import { mediaMock } from "../../../../redux/slices/mediaSlice/mediaSlice";
+import { MOCK_MEDIA } from "../../../../redux/slices/mediaSlice/mediaSlice";
 import searchYoutubeVideo, { YTQueryResponse } from "./searchYoutubeVideo";
 
 jest.mock("axios");
@@ -17,7 +17,7 @@ describe("SearchYoutubeVideo()", () => {
           type: "success",
           message: "video has been found",
           data: {
-            content: mediaMock,
+            content: MOCK_MEDIA,
             author: authorMock,
           },
         },
@@ -30,7 +30,7 @@ describe("SearchYoutubeVideo()", () => {
         type: "success",
         message: "video has been found",
         data: {
-          content: mediaMock,
+          content: MOCK_MEDIA,
           author: authorMock,
         },
       });

@@ -32,7 +32,25 @@ export interface IMedia {
   };
 }
 
-export const mediaMock: IMedia = {
+export const MOCK_MEDIA: IMedia = {
+  title: "mock title",
+  description: "mock description",
+  category: "mock category",
+  lengthSeconds: "mock lengthSeconds",
+  videoId: "mock videoId",
+  videoURL: "mock videoURL",
+  uploadDate: "mock uploadDate",
+  keywords: ["mock keyword 1", "mock keyword 2"],
+  ageRestricted: false,
+  isFamilySafe: true,
+  chapters: [],
+  videoThumbnails: [{ url: "", width: 0, height: 0 }],
+  embed: {
+    iframeURL: "mock iframeURL",
+  },
+};
+
+export const initialState: IMedia = {
   title: "",
   description: "",
   category: "",
@@ -49,8 +67,6 @@ export const mediaMock: IMedia = {
     iframeURL: "",
   },
 };
-
-const initialState = mediaMock;
 
 export const mediaSlice = createSlice({
   name: "media",

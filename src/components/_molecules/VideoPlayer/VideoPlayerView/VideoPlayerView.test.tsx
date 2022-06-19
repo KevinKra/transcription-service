@@ -1,11 +1,12 @@
 import { render, screen } from "../../../../testing-utils/test-utils";
-import VideoPlayerView from "./VideoPlayerView";
+import VideoPlayerView, {
+  TEST_ID_VIDEO_PLAYER_DETAILS,
+  TEST_ID_VIDEO_PLAYER_DISABLED,
+  TEST_ID_VIDEO_PLAYER_ENABLED,
+} from "./VideoPlayerView";
 import user from "@testing-library/user-event";
 import StyledSnackBar from "../../../_atoms/SnackBar/StyledSnackBar";
 
-const videoPlayerDisabled = /video-player-disabled/i;
-const videoPlayerEnabled = /video-player-enabled/i;
-const videoDetails = /video-player-details/i;
 const hideDetails = /hide details/i;
 const showDetails = /show details/i;
 
@@ -25,7 +26,9 @@ describe("VideoPlayerView", () => {
       });
 
       test("the player's video section appears in the default no-video format", () => {
-        expect(screen.getByTestId(videoPlayerDisabled)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+        ).toBeInTheDocument();
       });
 
       describe("and the withDetails prop is true", () => {
@@ -36,17 +39,21 @@ describe("VideoPlayerView", () => {
         });
 
         test("the the details section is not visible", () => {
-          expect(screen.queryByTestId(videoDetails)).not.toBeInTheDocument();
+          expect(
+            screen.queryByTestId(TEST_ID_VIDEO_PLAYER_DETAILS)
+          ).not.toBeInTheDocument();
         });
       });
 
       describe("if the user clicks the play button", () => {
         test("the player section remains in the default no-video format", () => {
-          expect(screen.getByTestId(videoPlayerDisabled)).toBeInTheDocument();
+          expect(
+            screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+          ).toBeInTheDocument();
         });
 
         test("a warning toast message appears", async () => {
-          user.click(screen.getByTestId(videoPlayerDisabled));
+          user.click(screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED));
           expect(
             await screen.findByText(
               /no media has been provided to the video player/i
@@ -69,7 +76,9 @@ describe("VideoPlayerView", () => {
       });
 
       test("the video automatically plays", () => {
-        expect(screen.getByTestId(videoPlayerEnabled)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(TEST_ID_VIDEO_PLAYER_ENABLED)
+        ).toBeInTheDocument();
       });
 
       describe("and the withDetails prop is true", () => {
@@ -80,7 +89,9 @@ describe("VideoPlayerView", () => {
         });
 
         test("the player's details section is not visible by default", () => {
-          expect(screen.queryByTestId(videoDetails)).not.toBeInTheDocument();
+          expect(
+            screen.queryByTestId(TEST_ID_VIDEO_PLAYER_DETAILS)
+          ).not.toBeInTheDocument();
         });
       });
 
@@ -90,7 +101,9 @@ describe("VideoPlayerView", () => {
         });
 
         test("the player's details section becomes visible", () => {
-          expect(screen.queryByTestId(videoDetails)).toBeInTheDocument();
+          expect(
+            screen.queryByTestId(TEST_ID_VIDEO_PLAYER_DETAILS)
+          ).toBeInTheDocument();
         });
 
         test.todo("all fields have values");
@@ -127,7 +140,9 @@ describe("VideoPlayerView", () => {
       });
 
       test("the player's details section is no longer visible", () => {
-        expect(screen.queryByTestId(videoDetails)).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId(TEST_ID_VIDEO_PLAYER_DETAILS)
+        ).not.toBeInTheDocument();
       });
 
       test("'hide details' button converts to 'show details'", () => {
@@ -169,7 +184,7 @@ describe("VideoPlayerView", () => {
 
       test("there is no details section", () => {
         expect(
-          screen.queryByTestId(/video-player-details/i)
+          screen.queryByTestId(TEST_ID_VIDEO_PLAYER_DETAILS)
         ).not.toBeInTheDocument();
       });
     });

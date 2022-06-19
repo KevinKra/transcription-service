@@ -6,7 +6,11 @@ import {
 } from "../../../testing-utils/test-utils";
 import { rest, DefaultRequestBody } from "msw";
 import { setupServer } from "msw/node";
-import SelectMedia from "./SelectMedia";
+import SelectMedia, {
+  TEST_ID_INPUT_MEDIA_URL,
+  TEST_ID_INPUT_SELECT_SOURCE,
+  TEST_ID_INPUT_SELECT_TARGET,
+} from "./SelectMedia";
 import user from "@testing-library/user-event";
 import {
   getApiAddress,
@@ -18,6 +22,10 @@ import { IMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { authorMock } from "../../../redux/slices/authorSlice/authorSlice";
 import { IPostMediaToS3Res } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
 import { ISearchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
+import {
+  TEST_ID_VIDEO_PLAYER_ENABLED,
+  TEST_ID_VIDEO_PLAYER_DISABLED,
+} from "../../_molecules/VideoPlayer/VideoPlayerView/VideoPlayerView";
 
 const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
@@ -49,7 +57,7 @@ const mediaMock: IMedia = {
   },
 };
 
-// ? these are all happy paths
+// * TESTING ENDPOINTS
 const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
     youtubeGetEndpoint,
@@ -84,7 +92,7 @@ const server = setupServer(
     }
   ),
 
-  // * set root endpoint to failure to it doesn't conflict
+  // * set root endpoint to failure so it doesn't conflict
   // * with tests uploading "new" files
   rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
     s3SearchEndpoint,
@@ -104,11 +112,6 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-const enabledVideoPlayer = /video-player-enabled/i;
-const disabledVideoPlayer = /video-player-disabled/i;
-const inputMediaUrl = /input-source-url/i;
-const inputSelectSource = /input-select-source-language/i;
-const inputSelectTarget = /input-select-target-language/i;
 const buttonBuildLesson = /build lesson/i;
 const mediaAddress = "https://www.youtube.com/watch?v=0La3aBSjvGY";
 
@@ -127,11 +130,11 @@ describe("SelectMedia", () => {
     });
 
     test("sourceLanguage selection input is disabled", () => {
-      expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
+      expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
     });
 
     test("targetLanguage selection input is disabled", () => {
-      expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
+      expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
     });
 
     test("the submit button is disabled", () => {
@@ -146,24 +149,24 @@ describe("SelectMedia", () => {
       beforeEach(() => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
-        user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+        user.type(screen.getByTestId(TEST_ID_INPUT_MEDIA_URL), mediaAddress);
         user.click(screen.getByRole("button", { name: /search/i }));
       });
       test("the VideoPlayer activates with the provided content", async () => {
         expect(
-          await screen.findByTestId(enabledVideoPlayer)
+          await screen.findByTestId(TEST_ID_VIDEO_PLAYER_ENABLED)
         ).toBeInTheDocument();
       });
 
       test("the sourceLanguage input is no longer disabled", async () => {
         await waitFor(() =>
-          expect(screen.getByTestId(inputSelectSource)).toBeEnabled()
+          expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeEnabled()
         );
       });
 
       test("the targetLanguage input is no longer disabled", async () => {
         await waitFor(() =>
-          expect(screen.getByTestId(inputSelectTarget)).toBeEnabled()
+          expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeEnabled()
         );
       });
 
@@ -186,7 +189,7 @@ describe("SelectMedia", () => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
         user.type(
-          screen.getByTestId(inputMediaUrl),
+          screen.getByTestId(TEST_ID_INPUT_MEDIA_URL),
           "https://www.youtube.com/watch?v=banana"
         );
         user.click(screen.getByRole("button", { name: /search/i }));
@@ -194,15 +197,17 @@ describe("SelectMedia", () => {
 
       test("the VideoPlayer does not activate", async () => {
         expect(
-          await screen.findByTestId(disabledVideoPlayer)
+          await screen.findByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
         ).toBeInTheDocument();
       });
 
       test("all inputs, except the media source input, remain disabled", () => {
-        expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
-        expect(screen.getByTestId(inputMediaUrl)).toBeEnabled();
-        expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
-        expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+        ).toBeInTheDocument();
+        expect(screen.getByTestId(TEST_ID_INPUT_MEDIA_URL)).toBeEnabled();
+        expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
+        expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
         expect(
           screen.getByRole("button", { name: buttonBuildLesson })
         ).toBeDisabled();
@@ -233,7 +238,7 @@ describe("SelectMedia", () => {
         render(<SelectMedia />);
         render(<StyledSnackBar />);
         user.type(
-          screen.getByTestId(inputMediaUrl),
+          screen.getByTestId(TEST_ID_INPUT_MEDIA_URL),
           "https://www.youtube.com/watch?v=ABC3aBSjABC"
         );
         user.click(screen.getByRole("button", { name: /search/i }));
@@ -241,15 +246,17 @@ describe("SelectMedia", () => {
 
       test("the VideoPlayer does not activate", async () => {
         expect(
-          await screen.findByTestId(disabledVideoPlayer)
+          await screen.findByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
         ).toBeInTheDocument();
       });
 
       test("all inputs, except the media source input, remain disabled", () => {
-        expect(screen.getByTestId(disabledVideoPlayer)).toBeInTheDocument();
-        expect(screen.getByTestId(inputMediaUrl)).toBeEnabled();
-        expect(screen.getByTestId(inputSelectSource)).toBeDisabled();
-        expect(screen.getByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+        ).toBeInTheDocument();
+        expect(screen.getByTestId(TEST_ID_INPUT_MEDIA_URL)).toBeEnabled();
+        expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
+        expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
         expect(
           screen.getByRole("button", { name: buttonBuildLesson })
         ).toBeDisabled();
@@ -268,7 +275,7 @@ describe("SelectMedia", () => {
     beforeEach(() => {
       render(<SelectMedia />);
       user.type(
-        screen.getByTestId(inputMediaUrl),
+        screen.getByTestId(TEST_ID_INPUT_MEDIA_URL),
         "https://www.youtube.com/watch?v=0La3aBSjvGY"
       );
       user.click(screen.getByRole("button", { name: /search/i }));
@@ -276,7 +283,7 @@ describe("SelectMedia", () => {
 
     test("the sibling language select input does not have the same option available", async () => {
       await waitFor(() =>
-        expect(screen.getByTestId(inputSelectSource)).toBeEnabled()
+        expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeEnabled()
       );
       const sourceInput = screen.getByTestId("input-select-source-language");
       const targetInput = screen.getByTestId("input-select-target-language");
@@ -291,7 +298,7 @@ describe("SelectMedia", () => {
     beforeEach(() => {
       render(<SelectMedia />);
       render(<StyledSnackBar />);
-      user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+      user.type(screen.getByTestId(TEST_ID_INPUT_MEDIA_URL), mediaAddress);
       const sourceInput = screen.getByTestId("input-select-source-language");
       const targetInput = screen.getByTestId("input-select-target-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });
@@ -319,9 +326,15 @@ describe("SelectMedia", () => {
           name: buttonBuildLesson,
         });
         user.click(buildButton);
-        expect(await screen.findByTestId(inputMediaUrl)).toBeDisabled();
-        expect(await screen.findByTestId(inputSelectSource)).toBeDisabled();
-        expect(await screen.findByTestId(inputSelectTarget)).toBeDisabled();
+        expect(
+          await screen.findByTestId(TEST_ID_INPUT_MEDIA_URL)
+        ).toBeDisabled();
+        expect(
+          await screen.findByTestId(TEST_ID_INPUT_SELECT_SOURCE)
+        ).toBeDisabled();
+        expect(
+          await screen.findByTestId(TEST_ID_INPUT_SELECT_TARGET)
+        ).toBeDisabled();
         expect(
           await screen.findByRole("button", { name: /building lesson/i })
         ).toBeDisabled();
@@ -331,7 +344,7 @@ describe("SelectMedia", () => {
 
   describe("when a video is submitted", () => {
     const submitForm = async () => {
-      user.type(screen.getByTestId(inputMediaUrl), mediaAddress);
+      user.type(screen.getByTestId(TEST_ID_INPUT_MEDIA_URL), mediaAddress);
       const sourceInput = screen.getByTestId("input-select-source-language");
       const targetInput = screen.getByTestId("input-select-target-language");
       fireEvent.change(sourceInput, { target: { value: "en-US" } });

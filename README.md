@@ -8,6 +8,7 @@
   - update material-ui integration.
   - build responsive ui/ux.
   - relearn project implementations.
+  - explore proto(?) to create a typing layer to join types between cms and api.
 - 2. build new feature, lesson translation page + components. **[mocked]**
   - handle confirm transcript and generate (mocked) translations.
   - continue to refine practices derived from previous step.

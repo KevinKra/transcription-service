@@ -16,6 +16,18 @@ export interface IAuthor {
   thumbnails: { height: number; width: number }[];
 }
 
+export const MOCK_AUTHOR = {
+  id: "1",
+  name: "mock author",
+  youtube: "mock youtube",
+  patreon: "mock patreon",
+  primaryLanguage: "mock primaryLanguage",
+  primaryTopic: "mock primaryTopic",
+  channelURL: "mock channelURL",
+  userURL: "mock userURL",
+  thumbnails: [],
+};
+
 export const authorMock: IAuthor = {
   id: "",
   name: "",

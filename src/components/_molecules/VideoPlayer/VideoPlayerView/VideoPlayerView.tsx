@@ -6,6 +6,11 @@ import { setAlert } from "../../../../redux/slices/alertSlice/alertSlice";
 
 type IVideoPlayerView = IVideoPlayerController;
 
+// * variables used for testing
+export const TEST_ID_VIDEO_PLAYER_ENABLED = "video-player-enabled";
+export const TEST_ID_VIDEO_PLAYER_DISABLED = "video-player-disabled";
+export const TEST_ID_VIDEO_PLAYER_DETAILS = "video-player-details";
+
 const VideoPlayerView = ({
   playable = false,
   withDetails,
@@ -19,7 +24,7 @@ const VideoPlayerView = ({
 
   return playable ? (
     <VideoPlayerWrapper>
-      <ActivePlayer data-testid="video-player-enabled">
+      <ActivePlayer data-testid={TEST_ID_VIDEO_PLAYER_ENABLED}>
         <iframe
           width="100%"
           height="100%"
@@ -39,7 +44,7 @@ const VideoPlayerView = ({
           </Button>
           {showDetails && (
             <DetailsExpand
-              data-testid="video-player-details"
+              data-testid={TEST_ID_VIDEO_PLAYER_DETAILS}
               aria-label="media details"
             >
               <Typography>Title</Typography>
@@ -51,7 +56,7 @@ const VideoPlayerView = ({
   ) : (
     <VideoPlayerWrapper>
       <DisabledPlayer
-        data-testid="video-player-disabled"
+        data-testid={TEST_ID_VIDEO_PLAYER_DISABLED}
         onClick={() =>
           dispatch(
             setAlert({
