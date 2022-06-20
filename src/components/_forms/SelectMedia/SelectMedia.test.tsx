@@ -105,8 +105,27 @@ afterAll(() => server.close());
 // const mediaAddress = "https://www.youtube.com/watch?v=0La3aBSjvGY";
 
 describe("SelectMedia", () => {
-  test("no video is selected", () => {
-    expect(1 + 1).toEqual(2);
+  test("on mount", () => {
+    // expect language mapping inputs to be disabled
+    // expect build lesson to be disabled
+  });
+
+  test("When a valid video is selected, the video players displays it and a success message appears", () => {
+    // enter valid youtube address
+    // click search button
+    // expect success snackbar
+    // expect video enabled in player
+    // expect language mapping inputs to be enabled
+    // expect build lesson button to be enabled when inputs selected
+  });
+
+  test("When an invalid video is selected, the video players does not display and a failure message appears", () => {
+    // enter invalid youtube address
+    // click search button
+    // expect failure snackbar
+    // expect video disabled in player
+    // expect language mapping inputs to be disabled
+    // expect build lesson button to remain disabled
   });
 });
 

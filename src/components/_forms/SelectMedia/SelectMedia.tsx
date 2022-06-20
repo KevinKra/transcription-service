@@ -10,7 +10,7 @@ import { youtubeGetId } from "../../../utils/helpers/youtubeGetId/youtubeGetId";
 import searchYoutubeVideo from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import { setMedia } from "../../../redux/slices/mediaSlice/mediaSlice";
 import { setAuthor } from "../../../redux/slices/authorSlice/authorSlice";
-import { handleS3Upload, optionsMapper } from "./utils";
+import { optionsMapper } from "./utils";
 
 type IFormInputs = {
   sourceURL: string;
@@ -108,14 +108,14 @@ const SelectMedia = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<IFormInputs> = async () => {
+  const onSubmit: SubmitHandler<IFormInputs> = () => {
     if (mountedRef.current) {
       setContentSubmitted(true);
     }
 
     // todo -- remove hardcoded contentId
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const s3FileData = await handleS3Upload("0La3aBSjvGY", dispatch);
+    // const s3FileData = await handleS3Upload("0La3aBSjvGY", dispatch);
   };
 
   return (
