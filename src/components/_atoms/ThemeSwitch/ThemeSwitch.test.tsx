@@ -25,9 +25,9 @@ describe("ThemeSwitch", () => {
       expect(switchElement).toBeInTheDocument();
     });
 
-    test.skip("the user clicks the switch, it sets to day mode", () => {
+    test.skip("the user clicks the switch, it sets to day mode", async () => {
       const switchElement = screen.getByTestId(/night-day-switch/i);
-      userEvent.click(switchElement);
+      await userEvent.click(switchElement);
     });
   });
 });

@@ -1,11 +1,11 @@
 import axios from "axios";
-import { mocked } from "ts-jest/utils";
+import { createMock } from "ts-jest-mock";
 import { ISearchForMediaS3, searchForMediaS3 } from "./searchForMediaS3";
 
 jest.mock("axios");
 
-const mockedAxios = mocked(axios);
-const mockedAxiosGet = mocked(mockedAxios.get);
+const mockedAxios = createMock(axios);
+const mockedAxiosGet = createMock(mockedAxios.get);
 
 describe("searchForMediaS3()", () => {
   describe("success response", () => {

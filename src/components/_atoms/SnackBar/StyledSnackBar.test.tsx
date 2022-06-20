@@ -36,7 +36,7 @@ describe("StyledSnackBar", () => {
     );
     const snackbarClose = screen.getByTitle("Close");
     expect(snackbar).toBeInTheDocument();
-    user.click(snackbarClose);
+    await user.click(snackbarClose);
     await waitFor(() => expect(snackbar).not.toBeInTheDocument());
   });
 });

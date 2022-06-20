@@ -1,11 +1,16 @@
+// import axios from "axios";
 import axios from "axios";
-import { mocked } from "ts-jest/utils";
+import { createMock } from "ts-jest-mock";
 import { IPostMediaToS3Res, postMediaToS3 } from "./postMediaToS3";
 
 jest.mock("axios");
 
-const mockedAxios = mocked(axios);
-const mockedAxiosPost = mocked(mockedAxios.post);
+const mockedAxios = createMock(axios);
+const mockedAxiosPost = createMock(mockedAxios.post);
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
 describe("postMediaToS3()", () => {
   describe("success response", () => {

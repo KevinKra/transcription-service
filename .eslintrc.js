@@ -23,6 +23,7 @@ module.exports = {
   rules: {
     "react/react-in-jsx-scope": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/unbound-method": 0,
     "@typescript-eslint/no-unused-vars": 2,
     "@typescript-eslint/no-unsafe-call": 2,
   },

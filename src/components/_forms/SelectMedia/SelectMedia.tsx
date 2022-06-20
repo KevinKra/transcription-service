@@ -19,7 +19,7 @@ type IFormInputs = {
 };
 
 // * variables used for testing
-export const TEST_ID_INPUT_MEDIA_URL = "input-source-url";
+export const TEST_ID_INPUT_SOURCE_URL = "input-source-url";
 export const TEST_ID_INPUT_SELECT_SOURCE = "input-select-source-language";
 export const TEST_ID_INPUT_SELECT_TARGET = "input-select-target-language";
 
@@ -141,7 +141,7 @@ const SelectMedia = () => {
                 fullWidth
                 label="Youtube Address"
                 inputProps={{
-                  "data-testid": TEST_ID_INPUT_MEDIA_URL,
+                  "data-testid": TEST_ID_INPUT_SOURCE_URL,
                 }}
                 variant="filled"
                 disabled={contentSubmitted || false}

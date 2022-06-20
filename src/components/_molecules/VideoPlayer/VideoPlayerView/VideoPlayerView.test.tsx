@@ -53,7 +53,7 @@ describe("VideoPlayerView", () => {
         });
 
         test("a warning toast message appears", async () => {
-          user.click(screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED));
+          await user.click(screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED));
           expect(
             await screen.findByText(
               /no media has been provided to the video player/i
@@ -96,8 +96,8 @@ describe("VideoPlayerView", () => {
       });
 
       describe("if the user clicks the 'show details' button", () => {
-        beforeEach(() => {
-          user.click(screen.getByRole("button", { name: showDetails }));
+        beforeEach(async () => {
+          await user.click(screen.getByRole("button", { name: showDetails }));
         });
 
         test("the player's details section becomes visible", () => {
@@ -126,7 +126,7 @@ describe("VideoPlayerView", () => {
     });
 
     describe("if the user clicks the 'hide details' button", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         render(
           <VideoPlayerView
             playable={true}
@@ -135,8 +135,8 @@ describe("VideoPlayerView", () => {
             timeStamp={{ startTime: 0, endTime: 10 }}
           />
         );
-        user.click(screen.getByRole("button", { name: showDetails }));
-        user.click(screen.getByRole("button", { name: hideDetails }));
+        await user.click(screen.getByRole("button", { name: showDetails }));
+        await user.click(screen.getByRole("button", { name: hideDetails }));
       });
 
       test("the player's details section is no longer visible", () => {

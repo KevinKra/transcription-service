@@ -1,13 +1,17 @@
 import axios from "axios";
-import { mocked } from "ts-jest/utils";
+import { createMock } from "ts-jest-mock";
 import { authorMock } from "../../../../redux/slices/authorSlice/authorSlice";
 import { MOCK_MEDIA } from "../../../../redux/slices/mediaSlice/mediaSlice";
 import searchYoutubeVideo, { YTQueryResponse } from "./searchYoutubeVideo";
 
 jest.mock("axios");
 
-const mockedAxios = mocked(axios);
-const mockedAxiosGet = mocked(mockedAxios.get);
+const mockedAxios = createMock(axios);
+const mockedAxiosGet = createMock(mockedAxios.get);
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
 describe("SearchYoutubeVideo()", () => {
   describe("success response", () => {
