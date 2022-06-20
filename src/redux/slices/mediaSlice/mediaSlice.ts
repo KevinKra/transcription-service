@@ -46,7 +46,7 @@ export const MOCK_MEDIA: IMedia = {
   chapters: [],
   videoThumbnails: [{ url: "", width: 0, height: 0 }],
   embed: {
-    iframeURL: "mock iframeURL",
+    iframeURL: "https://www.youtube.com/embed/0La3aBSjvGY",
   },
 };
 
