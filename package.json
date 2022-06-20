@@ -11,7 +11,7 @@
     "test:detect": "jest --detectOpenHandles",
     "test:ci": "jest --coverage --silent --ci",
     "test:coverage": "jest  --coverage --watchAll",
-    "test:husky": "jest",
+    "test:husky": "jest --detectOpenHandles",
     "cypress:open": "cypress open",
     "prepare": "husky install",
     "lint-staged": "lint-staged"

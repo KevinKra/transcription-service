@@ -55,7 +55,7 @@ const SelectMedia = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const subscription = watch((allFields) => {
+    const { unsubscribe } = watch((allFields) => {
       const { sourceLanguage, targetLanguage } = allFields;
       setSourceLanguage(sourceLanguage);
       setTargetLanguage(targetLanguage);
@@ -64,7 +64,7 @@ const SelectMedia = () => {
       allFieldsHaveInputs ? setSubmitDisabled(false) : setSubmitDisabled(true);
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, [watch]);
 
   const onSearch = async () => {
