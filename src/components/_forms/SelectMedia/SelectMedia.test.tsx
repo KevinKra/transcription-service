@@ -11,6 +11,7 @@ import SelectMedia, {
   TEST_ID_INPUT_SOURCE_URL,
   TEST_ID_INPUT_SELECT_SOURCE,
   TEST_ID_INPUT_SELECT_TARGET,
+  BUTTON_BUILD_LESSON,
 } from "./SelectMedia";
 import user from "@testing-library/user-event";
 import {
@@ -101,20 +102,32 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-// const buttonBuildLesson = /build lesson/i;
 // const mediaAddress = "https://www.youtube.com/watch?v=0La3aBSjvGY";
 
 describe("SelectMedia", () => {
   test("on mount", () => {
+    render(<SelectMedia />);
+
+    // expect video player to be disabled
+    expect(
+      screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+    ).toBeInTheDocument();
+
     // expect language mapping inputs to be disabled
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
+
     // expect build lesson to be disabled
+    expect(
+      screen.getByRole("button", { name: BUTTON_BUILD_LESSON })
+    ).toBeDisabled();
   });
 
   test("When a valid video is selected, the video players displays it and a success message appears", () => {
     // enter valid youtube address
     // click search button
     // expect success snackbar
-    // expect video enabled in player
+    // expect video player to be enabled
     // expect language mapping inputs to be enabled
     // expect build lesson button to be enabled when inputs selected
   });
@@ -123,7 +136,7 @@ describe("SelectMedia", () => {
     // enter invalid youtube address
     // click search button
     // expect failure snackbar
-    // expect video disabled in player
+    // expect video player to be disabled
     // expect language mapping inputs to be disabled
     // expect build lesson button to remain disabled
   });

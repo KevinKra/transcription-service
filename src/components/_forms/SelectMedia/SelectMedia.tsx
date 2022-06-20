@@ -1,5 +1,5 @@
 import { TextField, styled, MenuItem, Typography, Paper } from "@mui/material";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setAlert } from "../../../redux/slices/alertSlice/alertSlice";
@@ -22,6 +22,8 @@ type IFormInputs = {
 export const TEST_ID_INPUT_SOURCE_URL = "input-source-url";
 export const TEST_ID_INPUT_SELECT_SOURCE = "input-select-source-language";
 export const TEST_ID_INPUT_SELECT_TARGET = "input-select-target-language";
+export const BUTTON_BUILD_LESSON = "build lesson";
+export const BUTTON_BUILDING_LESSON = "building lesson";
 
 const SelectMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -38,17 +40,17 @@ const SelectMedia = () => {
     formState: { errors },
   } = useForm<IFormInputs>({});
 
-  const mountedRef = useRef(false);
-  // effect is just for tracking mounted state for react-testing-library
-  // todo -- determine if using refs is a good idea
-  // todo -- "memory leak" error in react-testing-library
-  // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+  // const mountedRef = useRef(false);
+  // // effect is just for tracking mounted state for react-testing-library
+  // // todo -- determine if using refs is a good idea
+  // // todo -- "memory leak" error in react-testing-library
+  // // source: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
+  // useEffect(() => {
+  //   mountedRef.current = true;
+  //   return () => {
+  //     mountedRef.current = false;
+  //   };
+  // }, []);
 
   const dispatch = useAppDispatch();
 
@@ -83,35 +85,35 @@ const SelectMedia = () => {
     const response = await searchYoutubeVideo(youtubeId);
 
     console.log("res", response);
-    if (mountedRef.current) {
-      if (response.type === "error" || response.data === undefined) {
-        dispatch(
-          setAlert({
-            type: response.type,
-            message: response.message,
-            display: "client-only",
-          })
-        );
-        return setShowVideo(false);
-      } else {
-        setShowVideo(true);
-        dispatch(setMedia(response.data.content));
-        dispatch(setAuthor(response.data.author));
-        dispatch(
-          setAlert({
-            type: response.type,
-            message: response.message,
-            display: "support-both",
-          })
-        );
-      }
+    // if (mountedRef.current) {
+    if (response.type === "error" || response.data === undefined) {
+      dispatch(
+        setAlert({
+          type: response.type,
+          message: response.message,
+          display: "client-only",
+        })
+      );
+      return setShowVideo(false);
+    } else {
+      setShowVideo(true);
+      dispatch(setMedia(response.data.content));
+      dispatch(setAuthor(response.data.author));
+      dispatch(
+        setAlert({
+          type: response.type,
+          message: response.message,
+          display: "support-both",
+        })
+      );
     }
+    // }
   };
 
   const onSubmit: SubmitHandler<IFormInputs> = () => {
-    if (mountedRef.current) {
-      setContentSubmitted(true);
-    }
+    // if (mountedRef.current) {
+    setContentSubmitted(true);
+    // }
 
     // todo -- remove hardcoded contentId
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -242,7 +244,7 @@ const SelectMedia = () => {
             variant="contained"
             type="submit"
           >
-            {contentSubmitted ? "building lesson" : "build lesson"}
+            {contentSubmitted ? BUTTON_BUILDING_LESSON : BUTTON_BUILD_LESSON}
           </LoadingButton>
         </FormControlInputs>
       </form>
