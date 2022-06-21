@@ -146,13 +146,31 @@ describe("SelectMedia", () => {
     expect(screen.getByText(BUTTON_BUILD_LESSON)).toBeInTheDocument();
   });
 
-  test("When an invalid video is selected, the video players does not display and a failure message appears", () => {
+  test("When an invalid video input is provided, the video players does not display and a failure message appears", async () => {
+    render(<SelectMedia />);
+    render(<StyledSnackBar />);
     // enter invalid youtube address
+    await user.type(
+      screen.getByTestId(TEST_ID_INPUT_SOURCE_URL),
+      "fake-address"
+    );
     // click search button
+    await user.click(screen.getByRole("button", { name: /search/i }));
     // expect failure snackbar
+    await waitFor(() => {
+      expect(screen.getByText(/invalid address provided/i)).toBeInTheDocument();
+    });
     // expect video player to be disabled
+    expect(
+      screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
+    ).toBeInTheDocument();
     // expect language mapping inputs to be disabled
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
     // expect build lesson button to remain disabled
+    expect(
+      screen.getByRole("button", { name: BUTTON_BUILD_LESSON })
+    ).toBeDisabled();
   });
 });
 
