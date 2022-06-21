@@ -107,29 +107,43 @@ afterAll(() => server.close());
 describe("SelectMedia", () => {
   test("on mount", () => {
     render(<SelectMedia />);
-
     // expect video player to be disabled
     expect(
       screen.getByTestId(TEST_ID_VIDEO_PLAYER_DISABLED)
     ).toBeInTheDocument();
-
     // expect language mapping inputs to be disabled
     expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeDisabled();
     expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeDisabled();
-
     // expect build lesson to be disabled
     expect(
       screen.getByRole("button", { name: BUTTON_BUILD_LESSON })
     ).toBeDisabled();
   });
 
-  test("When a valid video is selected, the video players displays it and a success message appears", () => {
+  test("When a valid video is selected, the video players displays it and a success message appears", async () => {
+    render(<SelectMedia />);
+    render(<StyledSnackBar />);
     // enter valid youtube address
+    await user.type(
+      screen.getByTestId(TEST_ID_INPUT_SOURCE_URL),
+      "https://www.youtube.com/watch?v=0La3aBSjvGY"
+    );
     // click search button
+    await user.click(screen.getByRole("button", { name: /search/i }));
     // expect success snackbar
+    await waitFor(() => {
+      const successToast = screen.getByText(/video found/i);
+      expect(successToast).toBeInTheDocument();
+    });
     // expect video player to be enabled
+    expect(
+      screen.getByTestId(TEST_ID_VIDEO_PLAYER_ENABLED)
+    ).toBeInTheDocument();
     // expect language mapping inputs to be enabled
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_SOURCE)).toBeEnabled();
+    expect(screen.getByTestId(TEST_ID_INPUT_SELECT_TARGET)).toBeEnabled();
     // expect build lesson button to be enabled when inputs selected
+    expect(screen.getByText(BUTTON_BUILD_LESSON)).toBeInTheDocument();
   });
 
   test("When an invalid video is selected, the video players does not display and a failure message appears", () => {
