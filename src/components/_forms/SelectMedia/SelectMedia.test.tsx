@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from "../../../testing-utils/test-utils";
+import { render, screen, waitFor } from "../../../testing-utils/test-utils";
 import { rest, DefaultRequestBody } from "msw";
 import { setupServer } from "msw/node";
 import SelectMedia, {
@@ -20,14 +15,8 @@ import {
 } from "../../../utils/helpers/apiRouteHandler/apiRouteHandler";
 import { YTQueryResponse } from "../../../utils/services/youtube/searchYoutubeVideo/searchYoutubeVideo";
 import StyledSnackBar from "../../_atoms/SnackBar/StyledSnackBar";
-import {
-  IMedia,
-  MOCK_MEDIA,
-} from "../../../redux/slices/mediaSlice/mediaSlice";
-import {
-  authorMock,
-  MOCK_AUTHOR,
-} from "../../../redux/slices/authorSlice/authorSlice";
+import { MOCK_MEDIA } from "../../../redux/slices/mediaSlice/mediaSlice";
+import { MOCK_AUTHOR } from "../../../redux/slices/authorSlice/authorSlice";
 import { IPostMediaToS3Res } from "../../../utils/services/aws/s3/postMediaToS3/postMediaToS3";
 import { ISearchForMediaS3 } from "../../../utils/services/aws/s3/searchForMediaS3/searchForMediaS3";
 import {
@@ -35,14 +24,14 @@ import {
   TEST_ID_VIDEO_PLAYER_DISABLED,
 } from "../../_molecules/VideoPlayer/VideoPlayerView/VideoPlayerView";
 
-const youtubeGetEndpoint = getApiAddress(ApiEndpointsEnum.youtubeId, [
+const YOUTUBE_GET_ENDPOINT_SUCCESS = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `0La3aBSjvGY`,
 ]);
-const youtubeGetEndpointFailure = getApiAddress(ApiEndpointsEnum.youtubeId, [
+const YOUTUBE_GET_ENDPOINT_ERROR = getApiAddress(ApiEndpointsEnum.youtubeId, [
   `00000000000`,
 ]);
-const s3PostEndpoint = getApiAddress(ApiEndpointsEnum.s3);
-const s3SearchEndpoint = getApiAddress(ApiEndpointsEnum.s3BucketsIdFilesId, [
+const S3_POST_ENDPOINT = getApiAddress(ApiEndpointsEnum.s3);
+const S3_GET_ENDPOINT = getApiAddress(ApiEndpointsEnum.s3BucketsIdFilesId, [
   "parakeet-content-bucket-test",
   `0La3aBSjvGY`,
 ]);
@@ -50,7 +39,7 @@ const s3SearchEndpoint = getApiAddress(ApiEndpointsEnum.s3BucketsIdFilesId, [
 // * TESTING ENDPOINTS
 const server = setupServer(
   rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
-    youtubeGetEndpoint,
+    YOUTUBE_GET_ENDPOINT_SUCCESS,
     (req, res, ctx) => {
       return res(
         ctx.json({
@@ -66,7 +55,7 @@ const server = setupServer(
   ),
 
   rest.get<DefaultRequestBody, YTQueryResponse["data"]>(
-    youtubeGetEndpointFailure,
+    YOUTUBE_GET_ENDPOINT_ERROR,
     (req, res, ctx) => {
       return res(
         ctx.status(400),
@@ -79,7 +68,7 @@ const server = setupServer(
   ),
 
   rest.post<DefaultRequestBody, IPostMediaToS3Res["data"]>(
-    s3PostEndpoint,
+    S3_POST_ENDPOINT,
     (req, res, ctx) => {
       return res(
         ctx.status(200),
@@ -98,7 +87,7 @@ const server = setupServer(
   // * set root endpoint to failure so it doesn't conflict
   // * with tests uploading "new" files
   rest.get<DefaultRequestBody, ISearchForMediaS3["data"]>(
-    s3SearchEndpoint,
+    S3_GET_ENDPOINT,
     (req, res, ctx) => {
       return res(
         ctx.status(400),
@@ -114,8 +103,6 @@ const server = setupServer(
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
-
-// const mediaAddress = "https://www.youtube.com/watch?v=0La3aBSjvGY";
 
 describe("SelectMedia", () => {
   test("on mount", () => {
